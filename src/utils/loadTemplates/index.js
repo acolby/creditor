@@ -12,9 +12,8 @@ function utils_loadTemplates({ path_templates }) {
       files: fs.readdirSync(path.join(path_templates, templatename)),
     }
     return acc;
-  }, {});
+  }, { _names: templateNames });
   
 }
 
 module.exports = utils_loadTemplates;
-

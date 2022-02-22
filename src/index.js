@@ -21,15 +21,7 @@ async function creditor(given = {}) {
   options.templates = utils_loadTemplates(options);
   options.package = await utils_analyzePackage(options);
 
-  // const config = require(`${process.cwd()}/creditor/config.js`);
-  // config.cwd = process.cwd();
-
-  // const config = utils_setupConfig(options);
-  // const package = utils_analyzePackage(config);
-
   console.log('---', options);
-  // const files = await fs_directoryTree(options.path_src);
-  // console.log(files);
 
   return {
     options,

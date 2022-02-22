@@ -5,20 +5,16 @@ const testutils_mountTestDir = require('#test/testutils/mountTestDir/index.js');
 
 describe('creditor', () => {
 
-  const options = {
-
-  }
+  let options;
 
   beforeEach(() => {
-    testutils_mountTestDir();
+    options = testutils_mountTestDir();
   })
 
-  afterEach(() => {
+  it('TODO', async () => {
 
-  });
-
-  it('TODO', () => {
-
+    console.log('---', options);
+    await creditor(options);
   });
 
 });

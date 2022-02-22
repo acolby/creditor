@@ -41,6 +41,10 @@ const testutils_mountTestDir = () => {
 
   deleteRecursiveSync(dest);
   copyRecursiveSync(src, dest);
+
+  return {
+    path_base: dest,
+  }
 }
 
 module.exports = testutils_mountTestDir;

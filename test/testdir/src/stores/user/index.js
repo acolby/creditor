@@ -11,7 +11,7 @@ const actions = {
   },
 }
 
-export const user_store = {
+export const stores_user = {
   actions,
   state,
 }

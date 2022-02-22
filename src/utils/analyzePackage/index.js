@@ -1,4 +1,4 @@
-function utils_analyzePackage(config) {
+async function utils_analyzePackage(config) {
   return {};
 }
 

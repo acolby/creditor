@@ -11,10 +11,9 @@ describe('creditor', () => {
     options = testutils_mountTestDir();
   })
 
-  it('TODO', async () => {
-
-    console.log('---', options);
-    await creditor(options);
+  it('Should proper load the config', async () => {
+    const instance = await creditor(options);
+    expect(instance.options.rel_src).to.equal('/src')
   });
 
 });

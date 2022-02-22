@@ -1,5 +1,5 @@
 const path = require('path');
-const fs_directoryTree = require('#src/fs/directoryTree/index.js');
+
 const utils_loadTemplates = require('#src/utils/loadTemplates/index.js');
 const utils_analyzePackage = require('./utils/analyzePackage');
 // const utils_setupConfig = require('./utils/setupConfig');

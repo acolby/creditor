@@ -1,7 +1,5 @@
-const fs = require('fs');
-const path = require('path');
 
-function utils_loadTemplates({ path_templates }) {
+function utils_parsePatternUsage({ path_templates }) {
 
   const templateNames = fs.readdirSync(path_templates);
 
@@ -12,8 +10,8 @@ function utils_loadTemplates({ path_templates }) {
       files: fs.readdirSync(path.join(path_templates, templatename)),
     }
     return acc;
-  }, {});
+  }, { });
   
 }
 
-module.exports = utils_loadTemplates;
+module.exports = utils_parsePatternUsage;

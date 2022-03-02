@@ -1,7 +1,7 @@
 const path = require('path');
 
 const utils_loadTemplates = require('#src/utils/loadTemplates/index.js');
-const utils_analyzePackage = require('./utils/analyzePackage');
+const utils_analyzeSrc = require('./utils/analyzeSrc');
 // const utils_setupConfig = require('./utils/setupConfig');
 
 const defaults = {
@@ -19,9 +19,9 @@ async function creditor(given = {}) {
   options.path_src = path.join(options.path_base, options.rel_src);
   options.path_templates = path.join(options.path_base, options.rel_templates);
   options.templates = utils_loadTemplates(options);
-  options.package = await utils_analyzePackage(options);
+  options.package = await utils_analyzeSrc(options);
 
-  console.log('---', options);
+  console.log('options', options);
 
   return {
     options,

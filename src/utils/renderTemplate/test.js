@@ -53,6 +53,12 @@ describe.only('utils_renderTemplate', () => {
     template = `import CREDITOR_UNDERSCORE_NAME from '@src/CREDITOR_SLASH_NAME';`;
     const res = mod(template, usage)
     expect(res).to.equal(`import stores_my_name from '@src/stores/my/name';`);
+  });
+
+  it('should properly render multiple CREDITOR_ and break out of infinite loop', () => {
+    template = `import CREDITOR_UNDERSCORE_NAME from '@src/CREDITOR_NOTUSED_NAME';`;
+    const res = mod(template, usage)
+    expect(res).to.equal(`import stores_my_name from '@src/CREDITOR_NOTUSED_NAME';`);
   })
 
 });

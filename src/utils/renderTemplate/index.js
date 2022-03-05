@@ -20,7 +20,7 @@ function utils_renderTemplate(template, usage) {
           const delimitor = delimiters[delimitorKey];
           rendered = rendered.replace(delimitorKey, usage.replace(/\//g, delimitor))
         } else {
-          console.log('warning: line', line, 'does not porperly use CREDITOR_');
+          // console.log('warning: line', line, 'does not porperly use CREDITOR_');
           break;
         }
       }

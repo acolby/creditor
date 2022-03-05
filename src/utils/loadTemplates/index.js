@@ -13,7 +13,7 @@ function utils_loadTemplates({ path_templates }) {
     }
     return acc;
   }, {});
-  
+
 }
 
 module.exports = utils_loadTemplates;

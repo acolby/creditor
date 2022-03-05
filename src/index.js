@@ -21,7 +21,7 @@ async function creditor(given = {}) {
   options.templates = utils_loadTemplates(options);
   options.package = await utils_analyzeSrc(options);
 
-  console.log('options', options);
+  // console.log('options', options);
 
   return {
     options,

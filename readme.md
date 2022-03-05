@@ -81,3 +81,54 @@ Within code you wish to use scaffolded components, you'll need to do the followi
 - Document example
 - Better analysis tools
 - Manifest uploading
+
+
+# Why Creditors
+
+- The importance of file patterns
+  - project based abstractions 
+  - focus of architect
+  - 
+
+- UnAmbiguous Naming conventions
+  - reviewing PRs
+  - Reading logs
+  - reading code, outside of a IDE
+
+- Incentivies Decomposibility
+  - Easy to manage templates
+  - Easy to move items
+  - Easy to create times
+
+- None import usage
+  - dyanmic impotrs
+
+- Static Analysis
+  - Usage Usage structure
+  - Linting Patern A not used in Pattern B
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

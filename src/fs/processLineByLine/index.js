@@ -14,6 +14,9 @@ async function fs_processLineByLine(filePath, processor = () => {}) {
     processor(line, lnNumber);
     lnNumber++;
   });
+
+  return new Promise(resolve => file.on('close', resolve));
+
 }
 
 module.exports = fs_processLineByLine;

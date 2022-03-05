@@ -7,22 +7,33 @@ const fs = require('fs');
 
 async function utils_analyzeSrc({ path_src, templates }) {
 
-  const allfiles = (await fs_directoryTree(path_src)).map(location => location.split(path_src)[1]);
+  const allfiles = (await fs_directoryTree(path_src)).map(location => location.split(`${path_src}/`)[1]);
 
-  allfiles
-  .forEach((filePath) => {
-    fs_processLineByLine(`${path_src}${filePath}`, (line, lineNumber) => {
-      const usage = utils_analyzeSrc_parsePatternUsage({ templates }, line);
-      if (usage) {
-        console.log(usage);
-      }
+  const folderMatches = {};
+
+  await Promise.all(allfiles
+    .map(async (filePath) => {
+      const folderPath = filePath.split('/').slice(0, -1).join('/');
+      folderMatches[folderPath] = folderMatches[folderPath] || [];
+      const allMatches = [];
+      await fs_processLineByLine(`${path_src}/${filePath}`, (line, lineNumber) => {
+        const usage = utils_analyzeSrc_parsePatternUsage({ templates }, line);
+        folderMatches[folderPath] = folderMatches[folderPath].concat(usage);
+      });
     })
-  })
+  );
+
+  return _removeDooplicates(folderMatches);
   
 }
 
 module.exports = utils_analyzeSrc;
 
-// Creating a readable stream from file
-// readline module reads line by line 
-// but from a readable stream only.
+function _removeDooplicates(data) {
+  return Object.entries(data).reduce((acc, [folderPath, matches]) => {
+    acc[folderPath] = matches.filter((item, index) => {
+      return index === matches.indexOf(item);
+    })
+    return acc;
+  }, {});
+}

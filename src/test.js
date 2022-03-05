@@ -32,7 +32,7 @@ describe('creditor', () => {
     describe('create', () => {
 
       it('should properly create the specified pattern in the spcified location', () => {
-
+        
       });
 
     })

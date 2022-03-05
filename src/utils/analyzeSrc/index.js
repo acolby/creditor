@@ -22,9 +22,8 @@ async function utils_analyzeSrc({ path_src, templates }) {
       });
     })
   );
-
   return _removeDooplicates(folderMatches);
-  
+
 }
 
 module.exports = utils_analyzeSrc;

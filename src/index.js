@@ -1,8 +1,11 @@
 const path = require('path');
 
 const utils_loadTemplates = require('#src/utils/loadTemplates/index.js');
-const utils_analyzeSrc = require('./utils/analyzeSrc');
+const utils_analyzeSrc = require('#src/utils/analyzeSrc');
 // const utils_setupConfig = require('./utils/setupConfig');
+
+const actions_create = require('#src/actions/create');
+// const actions_move = require('#src/actions/move');
 
 const defaults = {
   path_base: process.cwd(), // location of pactage json

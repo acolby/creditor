@@ -11,18 +11,20 @@ const delimiters = {
 function utils_renderTemplate(template, usage) {
   return template.split('\n')
     .map((line) => {
-      if (line.indexOf('CREDITOR_') > 0) {
+      let rendered = line;
+      while (rendered.indexOf('CREDITOR_') > 0) {
         const delimitorKey = Object.keys(delimiters).find((delimitorKey) => {
-          return line.indexOf(delimitorKey) > -1;
+          return rendered.indexOf(delimitorKey) > -1;
         });
-        console.log('found',delimitorKey)
         if (delimitorKey) {
           const delimitor = delimiters[delimitorKey];
-          return line.replace(delimitorKey, usage.replace(/\//g, delimitor))
+          rendered = rendered.replace(delimitorKey, usage.replace(/\//g, delimitor))
+        } else {
+          console.log('warning: line', line, 'does not porperly use CREDITOR_');
+          break;
         }
-        console.log('warning: line', line, 'does not porperly use CREDITOR_');
       }
-      return line;
+      return rendered;
     }).join('\n');
 }
 

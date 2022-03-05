@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const mod = require('./');
 
-describe('utils_renderTemplate', () => {
+describe.only('utils_renderTemplate', () => {
 
   let template;
   let usage;
@@ -48,5 +48,11 @@ describe('utils_renderTemplate', () => {
       export const stores/my/name = item;
     `);
   });
+
+  it('should properly render multiple CREDITOR_ on the same line', () => {
+    template = `import CREDITOR_UNDERSCORE_NAME from '@src/CREDITOR_SLASH_NAME';`;
+    const res = mod(template, usage)
+    expect(res).to.equal(`import stores_my_name from '@src/stores/my/name';`);
+  })
 
 });

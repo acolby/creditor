@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const mod = require('./');
 
-describe.only('utils_renderTemplate', () => {
+describe('utils_renderTemplate', () => {
 
   let template;
   let usage;

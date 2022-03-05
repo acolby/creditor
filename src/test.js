@@ -6,33 +6,37 @@ const testutils_mountTestDir = require('#test/testutils/mountTestDir/index.js');
 describe('creditor', () => {
 
   let options;
+  let instance;
 
   beforeEach(() => {
     options = testutils_mountTestDir();
+    instance = creditor(options);
   })
 
-  describe('setup', () => {
+  describe('init', () => {
 
-    it('Should proper load the config', async () => {
-      const instance = await creditor(options);
-      expect(instance.options.rel_src).to.equal('/src')
-      expect(instance.options.package['comps/root'][0]).to.equal('stores/user');
-      expect(instance.options.package['comps/root'][1]).to.equal('comps/root');
+    it('Shoulr properly init', async () => {
+      const data = await instance.init(options);
+      expect(data.rel_src).to.equal('/src')
+      expect(data.package['comps/root'][0]).to.equal('stores/user');
+      expect(data.package['comps/root'][1]).to.equal('comps/root');
     });
 
   })
 
-  describe('actions', () => {
+  describe.only('actions', () => {
 
-    let instance;
+    let actions;
     beforeEach(async () => {
-      const instance = await creditor(options);
+      const actions = creditor(options)
+      options = await actions.init();
     })
 
-    describe('create', () => {
+    describe('actions_create', () => {
 
       it('should properly create the specified pattern in the spcified location', () => {
-        
+        console.log(options);
+        // actions.create({ template: ''})
       });
 
     })

@@ -9,30 +9,29 @@ async function utils_analyzeSrc({ path_src, templates }) {
 
   const allfiles = (await fs_directoryTree(path_src)).map(location => location.split(`${path_src}/`)[1]);
 
-  const folderMatches = {};
+  const uses = {};
+  const usedBy = {};
 
   await Promise.all(allfiles
     .map(async (filePath) => {
       const folderPath = filePath.split('/').slice(0, -1).join('/');
-      folderMatches[folderPath] = folderMatches[folderPath] || [];
-      const allMatches = [];
+      uses[folderPath] = uses[folderPath] || {};
       await fs_processLineByLine(`${path_src}/${filePath}`, (line, lineNumber) => {
-        const usage = utils_analyzeSrc_parsePatternUsage({ templates }, line);
-        folderMatches[folderPath] = folderMatches[folderPath].concat(usage);
+        const usages = utils_analyzeSrc_parsePatternUsage({ templates }, line);
+        usages.forEach((usage) => {
+          uses[folderPath][usage] = true;
+          usedBy[usage] = usedBy[usage] || {};
+          usedBy[usage][folderPath] = true;
+        });
       });
     })
   );
-  return _removeDooplicates(folderMatches);
+
+  return {
+    uses: uses,
+    usedBy: usedBy,
+  };
 
 }
 
 module.exports = utils_analyzeSrc;
-
-function _removeDooplicates(data) {
-  return Object.entries(data).reduce((acc, [folderPath, matches]) => {
-    acc[folderPath] = matches.filter((item, index) => {
-      return index === matches.indexOf(item);
-    })
-    return acc;
-  }, {});
-}

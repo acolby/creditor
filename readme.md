@@ -73,7 +73,6 @@ Within code you wish to use scaffolded components, you'll need to do the followi
   // without the context to get the src bundle
 ```
 
-
 ## Example
 // TODO
 
@@ -82,53 +81,35 @@ Within code you wish to use scaffolded components, you'll need to do the followi
 - Better analysis tools
 - Manifest uploading
 
-
-# Why Creditors
+# Why Creditor
 
 - The importance of file patterns
   - project based abstractions 
-  - focus of architect
-  - 
+  - focus of archetecture
+  - file patterns represent the arecitectual layer of the application
 
 - UnAmbiguous Naming conventions
   - reviewing PRs
   - Reading logs
   - reading code, outside of a IDE
+  - consistant accross team members
+  - comments, documentation, typing etc.
 
-- Incentivies Decomposibility
+- Incentivises Decomposibility
   - Easy to manage templates
   - Easy to move items
   - Easy to create times
+  - Incentivises moving and decomposition
 
-- None import usage
-  - dyanmic impotrs
+- Named import usage
+  - dyanmic imports
+  - routes, models
 
 - Static Analysis
   - Usage Usage structure
   - Linting Patern A not used in Pattern B
-  
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- Stratagy for measurable refactoring
+  - Create the new 'ideal' file pattern template
+  - Move things from the 'legacy' to the 'ideal' pattern
+  - Measure progress

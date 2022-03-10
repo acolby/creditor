@@ -18,8 +18,10 @@ describe('creditor', () => {
     it('Should properly init', async () => {
       const data = await instance.init(options);
       expect(data.rel_src).to.equal('/src')
-      expect(data.package['comps/root'][0]).to.equal('stores/user');
-      expect(data.package['comps/root'][1]).to.equal('comps/root');
+      expect(data.package.uses['comps/root']['stores/user']).to.equal(true);
+      expect(data.package.uses['comps/root']['comps/root']).to.equal(true);
+      expect(data.package.usedBy['stores/user']['comps/root']).to.equal(true);
+      expect(data.package.usedBy['comps/root']['comps/root']).to.equal(true);
     });
 
   })
@@ -66,6 +68,13 @@ describe('creditor', () => {
         expect(Object.keys(files).length).to.equal(0);
       })
 
+    });
+
+    describe('actions_move', () => {
+      it('should properly move all items in directory', async () => {
+        const name = 'users/login/mainButton';
+        const files = await instance.create({ template: 'comps', name: 'users/login/mainButton' });
+      });
     });
 
   })

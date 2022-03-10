@@ -7,7 +7,7 @@ const utils_analyzeSrc = require('#src/utils/analyzeSrc/index.js');
 const actions_create = require('#src/actions/create/index.js');
 // const actions_move = require('#src/actions/move');
 
-const fs_writeFile = require('#src/fs/writeFile/index.js');
+const fs_commitFileObject = require('#src/fs/commitFileObject/index.js');
 
 const defaults = {
   path_base: process.cwd(), // location of pactage json
@@ -34,9 +34,7 @@ function creditor(given = {}) {
     },
     async create({ template, name }) {
       const files = await actions_create(options, { template, name });
-      await Promise.all(Object.entries(files).map(([filename, contents]) => {
-        return fs_writeFile(`${options.path_src}/${filename}`, contents);
-      }))
+      await fs_commitFileObject({ toCreate: files, path_base: options.path_src, verbose: options.verbose })
       return files;
     },
     async move({ name, name_initial }) {

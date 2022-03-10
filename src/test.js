@@ -45,7 +45,6 @@ describe('creditor', () => {
           '\n' +
           '};\n';
 
-
         const test_expected = 'import mod from \'@src/users/login/mainButton\';\n' +
           'import expect from \'chai\';\n' +
           '\n' +

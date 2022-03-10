@@ -19,9 +19,7 @@ describe('creditor', () => {
       const data = await instance.init(options);
       expect(data.rel_src).to.equal('/src')
       expect(data.package.uses['comps/root']['stores/user']).to.equal(true);
-      expect(data.package.uses['comps/root']['comps/root']).to.equal(true);
       expect(data.package.usedBy['stores/user']['comps/root']).to.equal(true);
-      expect(data.package.usedBy['comps/root']['comps/root']).to.equal(true);
     });
 
   })

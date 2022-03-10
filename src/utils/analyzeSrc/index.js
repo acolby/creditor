@@ -19,6 +19,7 @@ async function utils_analyzeSrc({ path_src, templates }) {
       await fs_processLineByLine(`${path_src}/${filePath}`, (line, lineNumber) => {
         const usages = utils_analyzeSrc_parsePatternUsage({ templates }, line);
         usages.forEach((usage) => {
+          if (usage === folderPath) return;
           uses[folderPath][usage] = true;
           usedBy[usage] = usedBy[usage] || {};
           usedBy[usage][folderPath] = true;

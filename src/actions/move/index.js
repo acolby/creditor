@@ -51,7 +51,7 @@ async function actions_move({ package, path_src, templates }, { template, name, 
     })
   )
 
-  return files;
+  return { files };
 }
 
 module.exports = actions_move;

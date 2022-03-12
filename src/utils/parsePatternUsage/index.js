@@ -53,7 +53,7 @@ function utils_parsePatternUsage({ templates }, string, verbose = false, matches
       }
       
       if (!!string[col_end]) {
-        utils_parsePatternUsage({ templates }, string.slice(col_end), verbose, matches, col_offset + col_end - 1)
+        utils_parsePatternUsage({ templates }, string.slice(col_end), verbose, matches, col_offset + col_end)
       }
     }
   });

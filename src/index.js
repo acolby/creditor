@@ -34,15 +34,15 @@ function creditor(given = {}) {
        return options;
     },
     async create({ template, name }) {
-      const files = await actions_create(options, { template, name });
-      await fs_commitFileObject({ toCreate: files, path_base: options.path_src, verbose: options.verbose })
-      return files;
+      const { files } = await actions_create(options, { template, name });
+      await fs_commitFileObject({ toCreate: files, path_base: options.path_src, rel_base: options.rel_src, verbose: options.verbose })
+      return { files };
     },
     async move({ template, name, name_to }) {
       const { files, templates } = await actions_move(options, { template, name, name_to });
-      await fs_commitFileObject({ ...templates, path_base: options.path_templates, verbose: options.verbose });
-      await fs_commitFileObject({ ...files, path_base: options.path_src, verbose: options.verbose });
-      return files;
+      await fs_commitFileObject({ ...templates, path_base: options.path_templates, rel_base: options.rel_templates, verbose: options.verbose });
+      await fs_commitFileObject({ ...files, path_base: options.path_src, rel_base: options.rel_src, verbose: options.verbose });
+      return { files, templates };
     },
     options: options,
   }

@@ -9,7 +9,6 @@ describe('creditor', () => {
   let instance;
 
   beforeEach(() => {
-    console.log('beforeEach');
     options = testutils_mountTestDir();
     instance = creditor(options);
   })
@@ -34,8 +33,7 @@ describe('creditor', () => {
     describe('actions_create', () => {
       it('should properly create the specified pattern in the spcified location', async () => {
         const name = 'users/login/mainButton';
-        const files = await instance.create({ template: 'comps', name: 'users/login/mainButton' });
-        console.log('awaited');
+        const { files } = await instance.create({ template: 'comps', name: 'users/login/mainButton' });
         const index_expected = '\n' +
           'export const users_login_mainButton = {\n' +
           '\n' +
@@ -64,7 +62,7 @@ describe('creditor', () => {
 
       it('should return an empty object when the pattern doesnt exist',  async () => {
         const name = 'users/login/mainButton';
-        const files = await instance.create({ template: 'nonexsistant', name });
+        const { files } = await instance.create({ template: 'nonexsistant', name });
         expect(Object.keys(files).length).to.equal(0);
       })
 
@@ -72,13 +70,19 @@ describe('creditor', () => {
 
     describe('actions_move', () => {
       it('should properly move all items in directory', async () => {
-        const files = await instance.move({ template: 'stores', name: 'user', name_to: 'profile' });
+        const { files } = await instance.move({ template: 'stores', name: 'user', name_to: 'profile' });
         expect(!!files.toCreate['stores/profile/access/index.js']).to.equal(true);
         expect(!!files.toCreate['stores/profile/index.js']).to.equal(true);
         expect(!!files.toDelete['stores/user/access/index.js']).to.equal(true);
         expect(!!files.toDelete['stores/user/index.js']).to.equal(true);
         expect(!!files.toUpdate['comps/root/index.js']).to.equal(true);
         expect(!!files.toUpdate['comps/root/test.js']).to.equal(false);
+      });
+
+      it('should properly update the template files', async () => {
+        const { templates } = await instance.move({ template: 'stores', name: 'user', name_to: 'profile' });
+        expect(!!templates.toUpdate['stores/index.js']).to.equal(true);
+        expect(!!templates.toUpdate['comps/index.js']).to.equal(false);
       });
     });
 

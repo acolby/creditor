@@ -1,3 +1,4 @@
+import stores_user;
 
 const state = {};
 

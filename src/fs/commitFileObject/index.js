@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const fs_writeFile = require('#src/fs/writeFile/index.js');
 const fs_removeRecursive = require('#src/fs/removeRecursive/index.js');
 
-async function fs_commitFileObject({ toCreate = {}, toUpdate = {}, toDelete = {}, path_base, verbose = false}) {
+async function fs_commitFileObject({ toCreate = {}, toUpdate = {}, toDelete = {}, path_base, rel_base = '', verbose = false}) {
 
   if (!path_base) new Error('base path was not passed in');
 
@@ -40,15 +40,15 @@ async function fs_commitFileObject({ toCreate = {}, toUpdate = {}, toDelete = {}
   return Promise.all((toWrite || [])
     .map((toWrite) => {
       if (toWrite.action === 'create') {
-        if (verbose) console.log(`${chalk.green('CREATE')} ${toWrite.path}`);
+        if (verbose) console.log(`${chalk.green('CREATE')} ${rel_base}${rel_base && '/' || ''}${toWrite.path}`);
         return fs_writeFile(`${path_base}/${toWrite.path}`, toWrite.contents);
       }
       if (toWrite.action === 'update') {
-        if (verbose) console.log(`${chalk.yellow('UPDATE')} ${toWrite.path}`);
+        if (verbose) console.log(`${chalk.yellow('UPDATE')} ${rel_base}${rel_base && '/' || ''}${toWrite.path}`);
         return fs_writeFile(`${path_base}/${toWrite.path}`, toWrite.contents);
       }
       if (toWrite.action === 'delete') {
-        if (verbose) console.log(`${chalk.red('DELETE')} ${toWrite.path}`);
+        if (verbose) console.log(`${chalk.red('DELETE')} ${rel_base}${rel_base && '/' || ''}${toWrite.path}`);
         return fs_removeRecursive(`${path_base}/${toWrite.path}`.split('/').slice(0, -1).join('/'));
       }
     }));

@@ -1,9 +1,9 @@
 const utils_replaceUsage = require('#src/utils/replaceUsage/index.js');
 const fs_readFile = require('#src/fs/readFile/index.js');
 
-async function actions_move({ package, path_src, templates }, { template, name, name_to }) {
+async function actions_move({ package, path_src, path_templates, templates }, { template, name, name_to }) {
   const files = { toCreate: {}, toUpdate: {}, toDelete: {} };
-
+  const templatesToUpdate = { toUpdate: {}, };
   const usage_from = `${template}/${name}`;
   const usage_to = `${template}/${name_to}`;
 
@@ -51,7 +51,27 @@ async function actions_move({ package, path_src, templates }, { template, name, 
     })
   )
 
-  return { files };
+  // 3. find template files that need to be updated
+  const templateFiles = [];
+  Object.entries(templates)
+    .forEach(([tempalte, templateDefinition]) => {
+      templateDefinition.files
+      .forEach((fileName) => {
+        templateFiles.push(`${path_templates}/${tempalte}/${fileName}`)
+      })
+    })
+
+  await Promise.all(
+    templateFiles.map(async (filePath) => {
+      const contents = await fs_readFile(filePath);
+      const newContents = await utils_replaceUsage({ templates }, contents, usagesToReplaceMap);
+      if (contents !== newContents) {
+        templatesToUpdate.toUpdate[filePath.split(`${path_templates}/`)[1]] = newContents;
+      }
+    })
+  )
+
+  return { files, templates: templatesToUpdate };
 }
 
 module.exports = actions_move;

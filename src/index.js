@@ -40,7 +40,7 @@ function creditor(given = {}) {
     },
     async move({ template, name, name_to }) {
       const files = await actions_move(options, { template, name, name_to });
-      // await fs_commitFileObject({ toCreate: files, path_base: options.path_src, verbose: options.verbose })
+      await fs_commitFileObject({ ...files, path_base: options.path_src, verbose: options.verbose })
       return files;
     },
     options: options,

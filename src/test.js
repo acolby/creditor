@@ -9,6 +9,7 @@ describe('creditor', () => {
   let instance;
 
   beforeEach(() => {
+    console.log('beforeEach');
     options = testutils_mountTestDir();
     instance = creditor(options);
   })
@@ -34,6 +35,7 @@ describe('creditor', () => {
       it('should properly create the specified pattern in the spcified location', async () => {
         const name = 'users/login/mainButton';
         const files = await instance.create({ template: 'comps', name: 'users/login/mainButton' });
+        console.log('awaited');
         const index_expected = '\n' +
           'export const users_login_mainButton = {\n' +
           '\n' +
@@ -70,9 +72,13 @@ describe('creditor', () => {
 
     describe('actions_move', () => {
       it('should properly move all items in directory', async () => {
-        const name = 'users/login/mainButton';
         const files = await instance.move({ template: 'stores', name: 'user', name_to: 'profile' });
-        console.log(files)
+        expect(!!files.toCreate['stores/profile/access/index.js']).to.equal(true);
+        expect(!!files.toCreate['stores/profile/index.js']).to.equal(true);
+        expect(!!files.toDelete['stores/user/access/index.js']).to.equal(true);
+        expect(!!files.toDelete['stores/user/index.js']).to.equal(true);
+        expect(!!files.toUpdate['comps/root/index.js']).to.equal(true);
+        expect(!!files.toUpdate['comps/root/test.js']).to.equal(false);
       });
     });
 

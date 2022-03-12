@@ -11,11 +11,18 @@ async function utils_analyzeSrc({ path_src, templates }) {
 
   const uses = {};
   const usedBy = {};
+  const usesInFiles = {};
 
   await Promise.all(allfiles
     .map(async (filePath) => {
       const folderPath = filePath.split('/').slice(0, -1).join('/');
+      const fileName = filePath.split('/').pop();
+
+      usesInFiles[folderPath] = usesInFiles[folderPath] || {};
       uses[folderPath] = uses[folderPath] || {};
+
+      usesInFiles[folderPath][fileName] = {};
+
       await fs_processLineByLine(`${path_src}/${filePath}`, (line, lineNumber) => {
         const usages = utils_parsePatternUsage({ templates }, line);
         usages.forEach((usage) => {
@@ -23,6 +30,7 @@ async function utils_analyzeSrc({ path_src, templates }) {
           uses[folderPath][usage] = true;
           usedBy[usage] = usedBy[usage] || {};
           usedBy[usage][folderPath] = true;
+          usesInFiles[folderPath][fileName][usage] = true;
         });
       });
     })
@@ -31,6 +39,7 @@ async function utils_analyzeSrc({ path_src, templates }) {
   return {
     uses: uses,
     usedBy: usedBy,
+    usesInFiles: usesInFiles,
   };
 
 }

@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const mod = require('./');
 
-describe.only('utils_replaceUsage', () => {
+describe('utils_replaceUsage', () => {
   it('should properlty replace an entire rendered template with file with the items given in the map', () => {
 
     const given = `

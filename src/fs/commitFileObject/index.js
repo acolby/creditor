@@ -49,7 +49,7 @@ async function fs_commitFileObject({ toCreate = {}, toUpdate = {}, toDelete = {}
       }
       if (toWrite.action === 'delete') {
         if (verbose) console.log(`${chalk.red('DELETE')} ${toWrite.path}`);
-        return lib.fs.removeRecursive(`${path_base}/${toWrite.path}`);
+        return fs_removeRecursive(`${path_base}/${toWrite.path}`.split('/').slice(0, -1).join('/'));
       }
     }));
 

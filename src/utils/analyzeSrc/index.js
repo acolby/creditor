@@ -1,6 +1,6 @@
 const fs_directoryTree = require('#src/fs/directoryTree/index.js');
 const fs_processLineByLine = require('#src/fs/processLineByLine/index.js');
-const utils_analyzeSrc_parsePatternUsage = require('#src/utils/analyzeSrc/parsePatternUsage/index.js');
+const utils_parsePatternUsage = require('#src/utils/parsePatternUsage/index.js');
 
 const readline = require('readline');
 const fs = require('fs');
@@ -17,7 +17,7 @@ async function utils_analyzeSrc({ path_src, templates }) {
       const folderPath = filePath.split('/').slice(0, -1).join('/');
       uses[folderPath] = uses[folderPath] || {};
       await fs_processLineByLine(`${path_src}/${filePath}`, (line, lineNumber) => {
-        const usages = utils_analyzeSrc_parsePatternUsage({ templates }, line);
+        const usages = utils_parsePatternUsage({ templates }, line);
         usages.forEach((usage) => {
           if (usage === folderPath) return;
           uses[folderPath][usage] = true;

@@ -1,6 +1,6 @@
 
 const path = require('path');
-const chalk = _chalktemp(); // require('chalk');
+const chalk = require('chalk');
 const fs_writeFile = require('#src/fs/writeFile/index.js');
 const fs_removeRecursive = require('#src/fs/removeRecursive/index.js');
 
@@ -56,12 +56,3 @@ async function fs_commitFileObject({ toCreate = {}, toUpdate = {}, toDelete = {}
 }
 
 module.exports = fs_commitFileObject;
-
-// TODO remove this with chalk module
-function _chalktemp() {
-  return {
-    green: item => item,
-    yello: item => item,
-    red: item => item,
-  }
-}

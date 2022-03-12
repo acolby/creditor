@@ -5,6 +5,7 @@ const utils_analyzeSrc = require('#src/utils/analyzeSrc/index.js');
 // const utils_setupConfig = require('./utils/setupConfig');
 
 const actions_create = require('#src/actions/create/index.js');
+const actions_move = require('#src/actions/move/index.js');
 // const actions_move = require('#src/actions/move');
 
 const fs_commitFileObject = require('#src/fs/commitFileObject/index.js');
@@ -37,8 +38,10 @@ function creditor(given = {}) {
       await fs_commitFileObject({ toCreate: files, path_base: options.path_src, verbose: options.verbose })
       return files;
     },
-    async move({ name, name_initial }) {
-      // TODO
+    async move({ template, name, name_to }) {
+      const files = await actions_move(options, { template, name, name_to });
+      // await fs_commitFileObject({ toCreate: files, path_base: options.path_src, verbose: options.verbose })
+      return files;
     },
     options: options,
   }

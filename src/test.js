@@ -62,7 +62,7 @@ describe('creditor', () => {
 
       it('should return an empty object when the pattern doesnt exist',  async () => {
         const name = 'users/login/mainButton';
-        const files = await instance.create({ template: 'nonexsistant', name: 'users/login/mainButton' });
+        const files = await instance.create({ template: 'nonexsistant', name });
         expect(Object.keys(files).length).to.equal(0);
       })
 
@@ -71,7 +71,8 @@ describe('creditor', () => {
     describe('actions_move', () => {
       it('should properly move all items in directory', async () => {
         const name = 'users/login/mainButton';
-        const files = await instance.create({ template: 'comps', name: 'users/login/mainButton' });
+        const files = await instance.move({ template: 'stores', name: 'user', name_to: 'profile' });
+        console.log(files)
       });
     });
 

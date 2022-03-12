@@ -1,7 +1,7 @@
 const expect = require('chai').expect;
 const mod = require('./');
 
-describe('utils_analyzeSrc_parsePatternUsage', () => {
+describe('utils_parsePatternUsage', () => {
   it('should parse a wide variety of strings', () => {
 
     const expected = {
@@ -50,5 +50,20 @@ describe('utils_analyzeSrc_parsePatternUsage', () => {
     })
     
   });
+
+  it('should provide attional information if verbose is set to true', () => {
+    const expected = {
+      'import {dodos_user} from "#src/dodos/user/index.js"': [{ usage: 'dodos/user', col_start: 8, col_end: 18, delimiter: '_'}, { usage: 'dodos/user', col_start: 30, col_end: 40, delimiter: '/'}],
+      'const dingos_user_access = requrie("#src/dingos/user/access/index.js")': [{"usage":"dingos/user/access","col_start":6,"col_end":24,"delimiter":"_"}, {"usage":"dingos/user/access","col_start":40,"col_end":58,"delimiter":"/"}],
+    };
+
+    Object.entries(expected)
+    .forEach(([given, output]) => {
+      const res = mod({ templates: { 'dodos': {}, 'dingos': {}, }}, given, true);
+      expect(JSON.stringify(res[0])).to.equal(JSON.stringify(output[0]));
+      expect(JSON.stringify(res[1])).to.equal(JSON.stringify(output[1]));
+    })
+
+  })
 
 });

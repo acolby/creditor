@@ -6,7 +6,13 @@ const readdirp = promisify(fs.readdir);
 const statp = promisify(fs.stat);
 
 async function fs_directoryTree(directoryName, results = []) {
-    let files = await readdirp(directoryName);
+    let files;
+    try {
+      files = await readdirp(directoryName);
+    } catch(e) {
+      return [];
+    }
+    
     for (let f of files) {
         let fullPath = path.join(directoryName, f);
         let stat = await statp(fullPath);

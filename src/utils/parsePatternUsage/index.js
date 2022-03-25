@@ -20,6 +20,8 @@ function utils_parsePatternUsage({ templates }, string, verbose = false, matches
     '\r': true,
     '.': true,
     ';': true,
+    '<': true,
+    '>': true,
   };
 
   // one pattern per line for now

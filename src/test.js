@@ -35,20 +35,20 @@ describe('creditor', () => {
         const name = 'users/login/mainButton';
         const { files } = await instance.create({ template: 'comps', name: 'users/login/mainButton' });
         const index_expected = '\n' +
-          'export const users_login_mainButton = {\n' +
+          'export const comps_users_login_mainButton = {\n' +
           '\n' +
           '  onMount: async () => {},\n' +
           '   \n' +
           '  render: () => {\n' +
-          '    return <div>users_login_mainButton placeholder</div>\n' +
+          '    return <div>comps_users_login_mainButton placeholder</div>\n' +
           '  },\n' +
           '\n' +
           '};\n';
 
-        const test_expected = 'import mod from \'@src/users/login/mainButton\';\n' +
+        const test_expected = 'import mod from \'@src/comps/users/login/mainButton\';\n' +
           'import expect from \'chai\';\n' +
           '\n' +
-          'describe(\'users_login_mainButton\', () => {\n' +
+          'describe(\'comps_users_login_mainButton\', () => {\n' +
           '\n' +
           '  it(\'should properly be called\', () => {\n' +
           '    mod();\n' +
@@ -62,8 +62,14 @@ describe('creditor', () => {
 
       it('should return an empty object when the pattern doesnt exist',  async () => {
         const name = 'users/login/mainButton';
-        const { files } = await instance.create({ template: 'nonexsistant', name });
-        expect(Object.keys(files).length).to.equal(0);
+        const expectedErrorMessage = `the template "nonexsistant" is not defined in the templates dir`;
+        let actualErrorMessage;
+        try {
+          await instance.create({ template: 'nonexsistant', name });
+        } catch (e) {
+          actualErrorMessage = e.message;
+        }
+        expect(actualErrorMessage).to.equal(expectedErrorMessage);
       })
 
     });

@@ -1,17 +1,17 @@
 # Creditor
 
-Creditor is used to for maintaining and scaffolding boiler plate templates code within a repository. Once templates are defined, Creditor makes it easy create, rename, moved, analyze and used these templates.
+##### Minimize writing boilerplate - focus on business logic!
 
-Creditor also uses the structure of the file system for defining how components should be used.
+Creditor is used to for maintaining and scaffolding boiler plate templates code within a repository. Once templates are defined, Creditor makes it easy create, rename, moved, analyze and use items associated with these templates.
 
 ## Usage
 ```
-  npm install --save @pclabs/creditor
+  npm install --save-dev @acolby/creditor
 ```
 
 ## Defining templates
 
-Creditor expects there to be a /creditor directory in the given project. This directory is where Creditor is configured and where templates are defined.
+Creditor expects there to be a ./creditor directory in the given project. This directory is where Creditor is configured and where templates are defined.
 
 ### ./creditor structure
 
@@ -20,9 +20,11 @@ The directory /creditor needs to be sturctured as follows
   /_ package.json
   /_ creditor
     /_ templates
-      /_ [TEMPLATED_TYPE]
-        /_ ...
-        /_ files that will be scaffolded
+      /_ [TEMPLATE_TYPE]
+        /_ ... // location where template files are defined
+    /_ aggregators
+      /_ [TEMPLATE_TYPE]
+        /_ ... // location where aggregators are defined
     /_ config.js
 ```
 
@@ -32,7 +34,7 @@ Add to package.json:
 ```
   scripts: {
     ...
-    "scaffold": 'node creditor',
+    "scaffold": 'node creditor inquire',
   }
 ```
 
@@ -45,71 +47,45 @@ The cli will then prompt for the information needed to scaffold a given template
 
 templates are outputted to whatever output directory defined in config.js.
 
-### /creditor/config.js
+## Defining Templates
 
-/creditor/config.js is used to overwrite Creditor defaults
-```
-// config.js
-module.exports = {
-  rel: './temp', // the relative output of the templates
-  manifest: '', // relative location of the manifest
-};
-```
+Templates are simply files. They are generic items that contain keywords known to creditor (Creditor Keywords). The template name is the name of the folder nthey are defined in.
 
-## Using Defined templates
+#### template  example
+A file corresponding to ./creditor/templates/comps/index.js could look like
 
-In order to get the full utility out of Creditor you will need to reconsider how you import and use scaffolded templates. Creditor uses the structure of you files to infer the structure of your components.
-
-Within code you wish to use scaffolded components, you'll need to do the following.
-
-```
-  require.context = require('@pclabs/creditor/context.js')
-  const src = require('@pclabs/creditor/import.js')(require.context(__dirname || './', true, /\.js$/));
-  module.exports = src;
-
-  // after this is called once you may call
-
-  const src = require('@pclabs/creditor/import.js')() 
-  // without the context to get the src bundle
+```jsx
+  // ./creditor/templates/comps/index.js
+  import {React} from 'react';
+  
+  function CREDITOR_UNDERSCORE_NAME(props) {
+    return <h1>Hello, i am CREDITOR_PERIOD_NAME</h1>;
+  }
+  
+  export default CREDITOR_UNDERSCORE_NAME;
+  
 ```
 
-## Example
-// TODO
+Now, runing creditor will allow you to create a 'comps' item, where the location of the item will deterine what gets swaped out with the Creditor Keyword (CREDITOR_UNDERSOCRE_NAME).
 
-# Backlog
-- Document example
-- Better analysis tools
-- Manifest uploading
+It is import to understand that a creditor template is allowed to contain mulitiple files. All of the tiles will be created in the output directory when runing creditor. This allows you to scafold any sort of FilePatter you wish.
 
-# Why Creditor
+For example you may scafold a 'comps' with the interface file (index.js) a test file and a scss file
 
-- The importance of file patterns
-  - project based abstractions 
-  - focus of archetecture
-  - file patterns represent the arecitectual layer of the application
+```
+  /_ creditor
+    /_ templates
+      /_ comps
+        /_ index.js
+        /_ styles.scss
+        /_ test.js
+```
 
-- UnAmbiguous Naming conventions
-  - reviewing PRs
-  - Reading logs
-  - reading code, outside of a IDE
-  - consistant accross team members
-  - comments, documentation, typing etc.
+### Creditor Keywords
+The folloing keywords within your template files will be swaped out with the created template.
 
-- Incentivises Decomposibility
-  - Easy to manage templates
-  - Easy to move items
-  - Easy to create times
-  - Incentivises moving and decomposition
+ - CREDITOR_UNDERSCORE_NAME -> name of component deniniated by '_'
+ - CREDITOR_PERIOD_NAME -> name of component deniniated by '.'
+ - CREDITOR_DASH_NAME -> name of component deniniated by '-'
+ - CREDITOR_SLASH_NAME -> name of component deniniated by '/'
 
-- Named import usage
-  - dyanmic imports
-  - routes, models
-
-- Static Analysis
-  - Usage Usage structure
-  - Linting Patern A not used in Pattern B
-
-- Stratagy for measurable refactoring
-  - Create the new 'ideal' file pattern template
-  - Move things from the 'legacy' to the 'ideal' pattern
-  - Measure progress

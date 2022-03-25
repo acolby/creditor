@@ -1,6 +1,6 @@
 {
   "name": "creditor",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Creditor is used to for maintaining and scaffolding boiler plate templates code within a repository. Once templates are defined, Creditor makes it easy create, rename, moved, analyze and used these templates.",
   "main": "index.js",
   "directories": {
@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "chalk": "^4.1.2",
+    "commander": "^9.1.0",
     "fs-extra": "^9.0.0",
     "fuzzy-filter": "0.0.3",
     "inquirer": "^7.1.0",

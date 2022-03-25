@@ -16,7 +16,6 @@ var copyRecursiveSync = function(src, dest) {
   }
 };
 
-
 var deleteRecursiveSync = function (directoryPath) {
   if (fs.existsSync(directoryPath)) {
       fs.readdirSync(directoryPath).forEach((file, index) => {
@@ -32,7 +31,6 @@ var deleteRecursiveSync = function (directoryPath) {
       fs.rmdirSync(directoryPath);
     }
 };
-
 
 const testutils_mountTestDir = () => {
   const base = process.cwd();

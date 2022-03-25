@@ -3,7 +3,12 @@ const path = require('path');
 
 function utils_loadTemplates({ path_templates }) {
 
-  const templateNames = fs.readdirSync(path_templates);
+  let templateNames;
+  try {
+    templateNames = fs.readdirSync(path_templates);
+  } catch(e) {
+    throw new Error(`Could not find any templates at ${path_templates}`);
+  }
 
   return templateNames.reduce((acc, templatename) => {
     acc[templatename] = {

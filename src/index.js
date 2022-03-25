@@ -2,11 +2,9 @@ const path = require('path');
 
 const utils_loadTemplates = require('#src/utils/loadTemplates/index.js');
 const utils_analyzeSrc = require('#src/utils/analyzeSrc/index.js');
-// const utils_setupConfig = require('./utils/setupConfig');
 
 const actions_create = require('#src/actions/create/index.js');
 const actions_move = require('#src/actions/move/index.js');
-// const actions_move = require('#src/actions/move');
 
 const fs_commitFileObject = require('#src/fs/commitFileObject/index.js');
 
@@ -19,7 +17,13 @@ const defaults = {
 };
 
 function creditor(given = {}) {
-  const options = { ...defaults, ...given };
+  const options = { ...defaults };
+
+  // apply overrieds
+  options.path_base = given.path_base || options.path_base;
+  options.rel_src = given.rel_src || options.rel_src;
+  options.rel_templates = given.rel_templates || options.rel_templates;
+
   let isInit = false;
 
   return {
@@ -34,6 +38,19 @@ function creditor(given = {}) {
        return options;
     },
     async create({ template, name }) {
+      if (!template) {
+        throw new Error('a template name was not specificed');
+      }
+      if (!options.templates[template]) {
+        throw new Error(`the template "${template}" is not defined in the templates dir`);
+      }
+      if (!name) {
+        throw new Error('the location was not specificed');
+      }
+      if (options.package.uses[`${template}/${name}`]) {
+        throw new Error(`the template (${template}/${name}) you are trying to render already exists `);
+      }
+
       const { files } = await actions_create(options, { template, name });
       await fs_commitFileObject({ toCreate: files, path_base: options.path_src, rel_base: options.rel_src, verbose: options.verbose })
       return { files };

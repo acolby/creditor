@@ -9,7 +9,7 @@ async function actions_create(options, { template, name }) {
   templateOptions.files.forEach((file) => {
     const templatePath = `${options.path_templates}/${template}/${file}`;
     const rawTemplate = fs.readFileSync(templatePath, 'utf8');
-    files[`${template}/${name}/${file}`] = utils_renderTemplate(rawTemplate, name);
+    files[`${template}/${name}/${file}`] = utils_renderTemplate(rawTemplate, `${template}/${name}`);
   });
 
   return { files };

@@ -20,3 +20,4 @@ node_modules
 .VolumeIcon.icns
 
 **/.temp/
+**/examples/**/src/

@@ -36,10 +36,28 @@ async function utils_analyzeSrc({ path_src, templates }) {
     })
   );
 
+  usesObj = {};
+
+  Object.keys(uses)
+  .forEach((usage) => {
+    segmentToObject(usesObj, usage)
+  })
+
+  function segmentToObject(output, segment = '') {
+    const first = segment.split('/')[0];
+    const rest = segment.split('/').slice(1);
+
+    output[first] = output[first] || {};
+
+    if (rest.length === 0) return;
+    segmentToObject(output[first], rest.join('/'))
+  }
+
   return {
     uses: uses,
     usedBy: usedBy,
     usesInFiles: usesInFiles,
+    usesObj: usesObj,
   };
 
 }

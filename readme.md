@@ -2,7 +2,7 @@
 
 ##### Minimize writing boilerplate - focus on business logic!
 
-Creditor is used to for maintaining and scaffolding boiler plate templates code within a repository. Once templates are defined, Creditor makes it easy create, rename, moved, analyze and use items associated with these templates.
+Creditor is used to for maintaining and scaffolding boiler plate templates code within a repository. Once templates are defined, Creditor makes it easy create, rename, moved, analyze, and use items associated with these templates.
 
 ## Usage
 ```
@@ -88,4 +88,37 @@ The folloing keywords within your template files will be swaped out with the cre
  - CREDITOR_PERIOD_NAME -> name of component deniniated by '.'
  - CREDITOR_DASH_NAME -> name of component deniniated by '-'
  - CREDITOR_SLASH_NAME -> name of component deniniated by '/'
+
+## Defining Aggregators (Beta - Advanced - WIP)
+
+It is often desired to take files witin a given directory and to aggregate them within a top level file of that directory. Examples of this are
+- Creating an interface file
+- Combining subfiles to create a store
+- Merging files for documentation purposes
+
+Creditor provides a mechinisem for defining how items witin a directory should be merged programatically. This allows deveoplers to focus on developing the items rather then updating the proper boilerplate agregator files.
+
+Similarly to templates, aggregators are defined witing the creditor directory
+
+For example you may scafold a 'comps' with the interface file (index.js) a test file and a scss file
+
+```
+  /_ creditor
+    /_ aggregators
+      /_ comps
+        /_ index.js
+```
+
+When creditor runs and if the comps directory is changed in any way. A corresponding /index.js file will be created at the top of the comps directory. The index.js file defined in /creditor/agregators/comps is the definition file for how to aggregate the sub-files.
+
+```js
+
+  export default function aggregate(allPaths) {
+    // the response 
+    
+
+
+  }
+  
+```
 

@@ -33,7 +33,7 @@ function aggreagtors_compose(options, params) {
 
 
 
-})`;
+  })`;
 }
 
 // in aggreagtor

@@ -36,6 +36,10 @@ program.command('inquire')
         name: answers.mvSrc,
         name_to: answers.mvDest,
       });
+    } else if (answers.action === 'aggregate') {
+      await instance.aggregate({
+        template: answers.template,
+      });
     }
   });
 
@@ -52,7 +56,7 @@ program.command('create <destination>')
         name: location.split('/').filter(item => item).slice(1).join('/'),
       });
     } catch(e) {
-      console.log('ERROR', e.message);
+      console.log('ERROR::', e.message, '--', e.stack.split('\n')[0]);
     }
   });
 
@@ -75,7 +79,23 @@ program.command('move <source> <destination>')
         name_to: dest.split('/').filter(item => item).slice(1).join('/'),
       });
     } catch(e) {
-      console.log('ERROR', e.message);
+      console.log('ERROR::', e.message, '--', e.stack.split('\n')[0]);
+    }
+  });
+
+program.command('aggregate <template>')
+  .description('Aggregate the items of the given template according the the given aggregators')
+  .option('--src', 'location of of your source code (default: "/src")')
+  .option('--verbose', 'show additional information')
+  .action(async (template, options) => {
+    const instance = creditor({ rel_src: options.src, verbose: options.verbose });
+    try {
+      await instance.init();
+      const files = await instance.aggregate({
+        template,
+      });
+    } catch(e) {
+       console.log('ERROR::', e.message, '--', e.stack.split('\n')[0]);
     }
   });
 
@@ -92,11 +112,11 @@ function _prompts() {
         choices: [
           'create',
           'move',
-          'agregate',
+          'aggregate',
           // 'analyze',
         ],
         nextPrompt() {
-          if (answers.action === 'create' || answers.action === 'move') return 'template';
+          if (answers.action === 'create' || answers.action === 'move' || answers.action === 'aggregate') return 'template';
         },
         
       }

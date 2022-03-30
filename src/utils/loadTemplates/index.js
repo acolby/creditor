@@ -10,11 +10,11 @@ function utils_loadTemplates({ path_templates }) {
     throw new Error(`Could not find any templates at ${path_templates}`);
   }
 
-  return templateNames.reduce((acc, templatename) => {
-    acc[templatename] = {
-      name: templatename,
-      path: path.join(path_templates, templatename),
-      files: fs.readdirSync(path.join(path_templates, templatename)),
+  return templateNames.reduce((acc, name) => {
+    acc[name] = {
+      name: name,
+      path: path.join(path_templates, name),
+      files: fs.readdirSync(path.join(path_templates, name)),
     }
     return acc;
   }, {});

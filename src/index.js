@@ -1,10 +1,12 @@
 const path = require('path');
 
 const utils_loadTemplates = require('#src/utils/loadTemplates/index.js');
+const utils_loadAggregators = require('#src/utils/loadAggregators/index.js');
 const utils_analyzeSrc = require('#src/utils/analyzeSrc/index.js');
 
 const actions_create = require('#src/actions/create/index.js');
 const actions_move = require('#src/actions/move/index.js');
+const actions_aggregate = require('#src/actions/aggregate/index.js');
 
 const fs_commitFileObject = require('#src/fs/commitFileObject/index.js');
 
@@ -13,6 +15,7 @@ const defaults = {
 
   // OPTIONAL
   rel_templates: '/creditor/templates', // default
+  rel_aggregators: '/creditor/aggregators', // default
   rel_src: '/src',
 };
 
@@ -23,6 +26,7 @@ function creditor(given = {}) {
   options.path_base = given.path_base || options.path_base;
   options.rel_src = given.rel_src || options.rel_src;
   options.rel_templates = given.rel_templates || options.rel_templates;
+  options.rel_aggregators = given.rel_aggregators || options.rel_aggregators;
   options.verbose = given.verbose || options.verbose;
 
   let isInit = false;
@@ -32,11 +36,25 @@ function creditor(given = {}) {
        // load templates
        options.path_src = path.join(options.path_base, options.rel_src);
        options.path_templates = path.join(options.path_base, options.rel_templates);
+       options.path_aggregators = path.join(options.path_base, options.rel_aggregators);
        options.templates = utils_loadTemplates(options);
+       options.aggregators = utils_loadAggregators(options);
        options.package = await utils_analyzeSrc(options);
 
        isInit = true;
        return options;
+    },
+    async aggregate({ template }) {
+      if (!template) {
+        throw new Error('a template name was not specificed');
+      }
+      if (!options.aggregators[template]) {
+        throw new Error(`the template "${template}" is not defined in the aggregators dir`);
+      }
+      const { files } = await actions_aggregate(options, { template });
+
+      await fs_commitFileObject({ toCreate: files, path_base: options.path_src, rel_base: options.rel_src, verbose: options.verbose })
+      return { files };
     },
     async create({ template, name }) {
       if (!template) {

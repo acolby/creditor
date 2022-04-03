@@ -1,5 +1,5 @@
 {
-  "name": "creditor",
+  "name": "@acolby/creditor",
   "version": "0.1.0",
   "description": "Creditor is used to for maintaining and scaffolding boiler plate templates code within a repository. Once templates are defined, Creditor makes it easy create, rename, moved, analyze and used these templates.",
   "main": "index.js",
@@ -23,8 +23,6 @@
     "fuzzy-filter": "0.0.3",
     "inquirer": "^7.3.3",
     "inquirer-autocomplete-prompt": "^1.4.0",
-    "picocolors": "^1.0.0",
-    "pluralize": "^8.0.0",
     "require-context": "^1.1.0",
     "run-async": "^2.4.1",
     "rxjs": "^7.5.4",
@@ -34,6 +32,8 @@
   "license": "ISC",
   "devDependencies": {
     "chai": "^4.3.6",
-    "mocha": "^9.2.0"
-  }
+    "mocha": "^9.2.0",
+    "prettier": "^2.6.2"
+  },
+  "bin": "cli.js"
 }

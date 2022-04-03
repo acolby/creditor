@@ -1,12 +1,11 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 function utils_loadTemplates({ path_templates }) {
-
   let templateNames;
   try {
     templateNames = fs.readdirSync(path_templates);
-  } catch(e) {
+  } catch (e) {
     throw new Error(`Could not find any templates at ${path_templates}`);
   }
 
@@ -15,10 +14,9 @@ function utils_loadTemplates({ path_templates }) {
       name: name,
       path: path.join(path_templates, name),
       files: fs.readdirSync(path.join(path_templates, name)),
-    }
+    };
     return acc;
   }, {});
-
 }
 
 module.exports = utils_loadTemplates;

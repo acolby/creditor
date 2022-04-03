@@ -1,6 +1,11 @@
 // pollyfill requirecontext if it is not supported (IE. node or not in browser)
-if (!require.context && !_try(function() { return !!window; }, false)) {
-  const contextpath = 'require-context';
+if (
+  !require.context &&
+  !_try(function () {
+    return !!window;
+  }, false)
+) {
+  const contextpath = "require-context";
   require.context = require(contextpath);
 }
 

@@ -2,9 +2,10 @@
 
 ##### Minimize writing boilerplate - focus on business logic!
 
-Creditor is used to for maintaining and scaffolding boiler plate templates code within a repository. Once templates are defined, Creditor makes it easy create, rename, moved, analyze, and use items associated with these templates.
+Creditor is used for maintaining and scaffolding boiler plate template code within a repository. Once templates are defined, Creditor makes it easy create, rename, moved, analyze, and use items associated with these templates.
 
 ## Usage
+
 ```
   npm install --save-dev @acolby/creditor
 ```
@@ -15,7 +16,8 @@ Creditor expects there to be a ./creditor directory in the given project. This d
 
 ### ./creditor structure
 
-The directory /creditor needs to be sturctured as follows
+The "/creditor" directory needs to be sturctured as follows
+
 ```
   /_ package.json
   /_ creditor
@@ -31,16 +33,18 @@ The directory /creditor needs to be sturctured as follows
 Once a [TEMPLATED_TYPE] is defined you may create this template in your repository by using the creditor cli. It is recommended that you add a line to your package.json file in order to do so.
 
 Add to package.json:
+
 ```
   scripts: {
     ...
-    "scaffold": 'node creditor inquire',
+    "creditor": 'node creditor inquire --verbose',
   }
 ```
 
 Once added, defined templates can be managed by calling:
+
 ```
-  $: npm run scaffold
+  $: npm run creditor
 ```
 
 The cli will then prompt for the information needed to scaffold a given template.
@@ -51,24 +55,24 @@ templates are outputted to whatever output directory defined in config.js.
 
 Templates are simply files. They are generic items that contain keywords known to creditor (Creditor Keywords). The template name is the name of the folder nthey are defined in.
 
-#### template  example
+#### template example
+
 A file corresponding to ./creditor/templates/comps/index.js could look like
 
 ```jsx
-  // ./creditor/templates/comps/index.js
-  import {React} from 'react';
-  
-  function CREDITOR_UNDERSCORE_NAME(props) {
-    return <h1>Hello, i am CREDITOR_PERIOD_NAME</h1>;
-  }
-  
-  export default CREDITOR_UNDERSCORE_NAME;
-  
+// ./creditor/templates/comps/index.js
+import { React } from "react";
+
+function CREDITOR_UNDERSCORE_NAME(props) {
+  return <h1>Hello, i am CREDITOR_PERIOD_NAME</h1>;
+}
+
+export default CREDITOR_UNDERSCORE_NAME;
 ```
 
 Now, runing creditor will allow you to create a 'comps' item, where the location of the item will deterine what gets swaped out with the Creditor Keyword (CREDITOR_UNDERSOCRE_NAME).
 
-It is import to understand that a creditor template is allowed to contain mulitiple files. All of the tiles will be created in the output directory when runing creditor. This allows you to scafold any sort of FilePatter you wish.
+It is import to understand that a creditor template directory is allowed to contain mulitiple files. All of the tiles will be created in the output directory when runing creditor. This allows you to scafold any sort of File Pattern you wish.
 
 For example you may scafold a 'comps' with the interface file (index.js) a test file and a scss file
 
@@ -82,16 +86,18 @@ For example you may scafold a 'comps' with the interface file (index.js) a test 
 ```
 
 ### Creditor Keywords
+
 The folloing keywords within your template files will be swaped out with the created template.
 
- - CREDITOR_UNDERSCORE_NAME -> name of component deniniated by '_'
- - CREDITOR_PERIOD_NAME -> name of component deniniated by '.'
- - CREDITOR_DASH_NAME -> name of component deniniated by '-'
- - CREDITOR_SLASH_NAME -> name of component deniniated by '/'
+- CREDITOR*UNDERSCORE_NAME -> name of component deniniated by '*'
+- CREDITOR_PERIOD_NAME -> name of component deniniated by '.'
+- CREDITOR_DASH_NAME -> name of component deniniated by '-'
+- CREDITOR_SLASH_NAME -> name of component deniniated by '/'
 
-## Defining Aggregators (Beta - Advanced - WIP)
+## Defining Aggregators
 
-It is often desired to take files witin a given directory and to aggregate them within a top level file of that directory. Examples of this are
+It is often desired to take files witin a given directory and aggregate them within a top level file of that directory. Examples of this are:
+
 - Creating an interface file
 - Combining subfiles to create a store
 - Merging files for documentation purposes
@@ -105,20 +111,39 @@ For example you may scafold a 'comps' with the interface file (index.js) a test 
 ```
   /_ creditor
     /_ aggregators
-      /_ comps
+      /_ routes
         /_ index.js
 ```
 
 When creditor runs and if the comps directory is changed in any way. A corresponding /index.js file will be created at the top of the comps directory. The index.js file defined in /creditor/agregators/comps is the definition file for how to aggregate the sub-files.
 
 ```js
+module.exports = (paths) => {
+  const filtered = Object.keys(paths)
+    .filter((item) => item.split("/").length === 2)
+    .sort();
 
-  export default function aggregate(allPaths) {
-    // the response 
-    
+  const _exports = filtered.map(
+    (item) => `export { ${item.replace(/\//g, "_")} } from '#src/${item}';`
+  );
 
-
-  }
-  
+  return ["", ..._exports, ""].join("\n");
+};
 ```
 
+The above example takes the directory and exports all items that are defined at the second layer of the file. This is to create an interface file for other directorys or for perhaps a library interface.
+
+```js
+export { routes_login } from "#src/routes/login";
+export { routes_profile } from "#src/routes/profile";
+export { routes_settings } from "#src/routes/settings";
+```
+
+Aggregators will run anytime the path structure of the given directory changes
+
+## Future Features
+
+- Publishable Templates
+- Graph analysis
+- Consumption graph
+- Linting based off of templates

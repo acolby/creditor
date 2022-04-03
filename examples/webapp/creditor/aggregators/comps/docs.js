@@ -1,6 +1,6 @@
-module.exports = (package) => {
+module.exports = ({ paths = [] }) => {
 
-  const filtered = Object.keys(package.uses)
+  const filtered = paths
     .filter(item => item.split('/').length === 2)
     .sort();
 
@@ -8,4 +8,5 @@ module.exports = (package) => {
     .map(item => `export { ${item.replace(/\//g, '_')} } from '#src/${item}';`)
 
   return ['', ..._exports, ''].join('\n');
+
 };

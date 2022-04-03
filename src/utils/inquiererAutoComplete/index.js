@@ -4,19 +4,19 @@
  * `autocomplete` type prompt
  */
 
-var ansiEscapes = require('ansi-escapes');
-var chalk = require('chalk');
-var figures = require('figures');
-var Base = require('inquirer/lib/prompts/base');
-var Choices = require('inquirer/lib/objects/choices');
-var observe = require('inquirer/lib/utils/events');
-var utils = require('inquirer/lib/utils/readline');
-var Paginator = require('inquirer/lib/utils/paginator');
-var runAsync = require('run-async');
-var { takeWhile } = require('rxjs/operators');
+var ansiEscapes = require("ansi-escapes");
+var chalk = require("chalk");
+var figures = require("figures");
+var Base = require("inquirer/lib/prompts/base");
+var Choices = require("inquirer/lib/objects/choices");
+var observe = require("inquirer/lib/utils/events");
+var utils = require("inquirer/lib/utils/readline");
+var Paginator = require("inquirer/lib/utils/paginator");
+var runAsync = require("run-async");
+var { takeWhile } = require("rxjs/operators");
 
 const isSelectable = (choice) =>
-  choice.type !== 'separator' && !choice.disabled;
+  choice.type !== "separator" && !choice.disabled;
 
 class AutocompletePrompt extends Base {
   constructor(
@@ -27,7 +27,7 @@ class AutocompletePrompt extends Base {
     super(questions, rl, answers);
 
     if (!this.opt.source) {
-      this.throwParamError('source');
+      this.throwParamError("source");
     }
 
     this.currentChoices = new Choices([]);
@@ -77,20 +77,20 @@ class AutocompletePrompt extends Base {
   render(error /*: ?string */) {
     // Render question
     var content = this.getQuestion();
-    var bottomContent = '';
+    var bottomContent = "";
 
     if (this.firstRender) {
-      var suggestText = this.opt.suggestOnly ? ', tab to autocomplete' : '';
+      var suggestText = this.opt.suggestOnly ? ", tab to autocomplete" : "";
       content += chalk.dim(
-        '(Use arrow keys or type to search' + suggestText + ')'
+        "(Use arrow keys or type to search" + suggestText + ")"
       );
     }
     // Render choices or answer depending on the state
-    if (this.status === 'answered') {
+    if (this.status === "answered") {
       content += chalk.cyan(this.shortAnswer || this.answerName || this.answer);
     } else if (this.searching) {
       content += this.rl.line;
-      bottomContent += '  ' + chalk.dim(this.opt.searchText || 'Searching...');
+      bottomContent += "  " + chalk.dim(this.opt.searchText || "Searching...");
     } else if (this.nbChoices) {
       var choicesStr = listRender(this.currentChoices, this.selected);
       content += this.rl.line;
@@ -101,7 +101,7 @@ class AutocompletePrompt extends Base {
           return false;
         }
         const name = choice.name;
-        realIndexPosition += name ? name.split('\n').length : 0;
+        realIndexPosition += name ? name.split("\n").length : 0;
         return true;
       });
       bottomContent += this.paginator.paginate(
@@ -112,11 +112,11 @@ class AutocompletePrompt extends Base {
     } else {
       content += this.rl.line;
       bottomContent +=
-        '  ' + chalk.yellow(this.opt.emptyText || 'No results...');
+        "  " + chalk.yellow(this.opt.emptyText || "No results...");
     }
 
     if (error) {
-      bottomContent += '\n' + chalk.red('>> ') + error;
+      bottomContent += "\n" + chalk.red(">> ") + error;
     }
 
     this.firstRender = false;
@@ -130,15 +130,14 @@ class AutocompletePrompt extends Base {
   onSubmit(line /* : string */) {
     const lineOrRl = line || this.rl.line;
 
-    if (typeof this.opt.validate === 'function') {
+    if (typeof this.opt.validate === "function") {
       const checkValidationResult = (validationResult) => {
         if (validationResult !== true) {
-          
           this.rl.line += lineOrRl;
           this.rl.cursor = lineOrRl.length;
 
           this.render(
-            validationResult || 'Enter something, tab to autocomplete!'
+            validationResult || "Enter something, tab to autocomplete!"
           );
         } else {
           this.onSubmitAfterValidation(lineOrRl);
@@ -176,7 +175,7 @@ class AutocompletePrompt extends Base {
       this.answer = line || this.rl.line;
       this.answerName = line || this.rl.line;
       this.shortAnswer = line || this.rl.line;
-      this.rl.line = '';
+      this.rl.line = "";
     } else if (this.nbChoices) {
       choice = this.currentChoices.getChoice(this.selected);
       this.answer = choice.value;
@@ -196,7 +195,7 @@ class AutocompletePrompt extends Base {
         this.shortAnswer = value;
       }
 
-      this.status = 'answered';
+      this.status = "answered";
       // Rerender prompt
       this.render();
       this.screen.done();
@@ -266,22 +265,22 @@ class AutocompletePrompt extends Base {
     var len;
     var keyName = (e.key && e.key.name) || undefined;
 
-    if (keyName === 'tab' && this.opt.suggestOnly) {
+    if (keyName === "tab" && this.opt.suggestOnly) {
       if (this.currentChoices.getChoice(this.selected)) {
         var autoCompleted = this.currentChoices.getChoice(this.selected).value;
-        this.rl.input.emit('keypress', '\b', { name: 'backspace' });
+        this.rl.input.emit("keypress", "\b", { name: "backspace" });
         if (autoCompleted.includes(this.rl.line)) {
-          this.rl.write(autoCompleted.replace(this.rl.line, ''));
+          this.rl.write(autoCompleted.replace(this.rl.line, ""));
         }
         this.render();
       }
-    } else if (keyName === 'down' || (keyName === 'n' && e.key.ctrl)) {
+    } else if (keyName === "down" || (keyName === "n" && e.key.ctrl)) {
       len = this.nbChoices;
       this.selected = this.selected < len - 1 ? this.selected + 1 : 0;
       this.ensureSelectedInRange();
       this.render();
       utils.up(this.rl, 2);
-    } else if (keyName === 'up' || (keyName === 'p' && e.key.ctrl)) {
+    } else if (keyName === "up" || (keyName === "p" && e.key.ctrl)) {
       len = this.nbChoices;
       this.selected = this.selected > 0 ? this.selected - 1 : len - 1;
       this.ensureSelectedInRange();
@@ -302,41 +301,41 @@ class AutocompletePrompt extends Base {
  * @return {String}         Rendered content
  */
 function listRender(choices, pointer /*: string */) /*: string */ {
-  var output = '';
+  var output = "";
   var separatorOffset = 0;
 
   choices.forEach(function (choice, i) {
-    if (choice.type === 'separator') {
+    if (choice.type === "separator") {
       separatorOffset++;
-      output += '  ' + choice + '\n';
+      output += "  " + choice + "\n";
       return;
     }
 
     if (choice.disabled) {
       separatorOffset++;
-      output += '  - ' + choice.name;
+      output += "  - " + choice.name;
       output +=
-        ' (' +
-        (typeof choice.disabled === 'string' ? choice.disabled : 'Disabled') +
-        ')';
-      output += '\n';
+        " (" +
+        (typeof choice.disabled === "string" ? choice.disabled : "Disabled") +
+        ")";
+      output += "\n";
       return;
     }
 
     var isSelected = i - separatorOffset === pointer;
-    var line = (isSelected ? figures.pointer + ' ' : '  ') + choice.name;
+    var line = (isSelected ? figures.pointer + " " : "  ") + choice.name;
 
     if (isSelected) {
       line = chalk.cyan(line);
     }
-    output += line + ' \n';
+    output += line + " \n";
   });
 
-  return output.replace(/\n$/, '');
+  return output.replace(/\n$/, "");
 }
 
 function isPromise(value) {
-  return typeof value === 'object' && typeof value.then === 'function';
+  return typeof value === "object" && typeof value.then === "function";
 }
 
 module.exports = AutocompletePrompt;

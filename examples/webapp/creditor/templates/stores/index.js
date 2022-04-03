@@ -1,4 +1,4 @@
-import stores_user from "#src/stores/user";
+import stores_user;
 
 const state = {};
 
@@ -7,11 +7,11 @@ const actions = {
     // setState
     return state;
   },
-};
+}
 
 export const CREDITOR_UNDERSCORE_NAME = {
   actions,
   state,
-};
+}
 
 export default CREDITOR_UNDERSCORE_NAME;

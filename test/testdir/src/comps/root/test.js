@@ -1,10 +1,8 @@
-const expect = require('chai').expect;
-const mod = require('./');
+const expect = require("chai").expect;
+const mod = require("./");
 
-describe('comps_root', () => {
-
-  it('Should properly init', async () => {
-     mod();
+describe("comps_root", () => {
+  it("Should properly init", async () => {
+    mod();
   });
-
 });

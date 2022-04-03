@@ -1,33 +1,36 @@
-
-function utils_parsePatternUsage({ templates }, string, verbose = false, matches = [], col_offset = 0) {
-
+function utils_parsePatternUsage(
+  { templates },
+  string,
+  verbose = false,
+  matches = [],
+  col_offset = 0
+) {
   const delimiters = {
-    '_': true,
-    '/': true,
-    '.': true,
-    '-': true,
+    _: true,
+    "/": true,
+    ".": true,
+    "-": true,
   };
 
   const terminators = {
-    '(': true,
-    ' ': true,
-    '\'': true,
+    "(": true,
+    " ": true,
+    "'": true,
     '"': true,
-    '`': true,
-    '\t': true,
-    '\n': true,
-    '}': true,
-    '\r': true,
-    '.': true,
-    ';': true,
-    '<': true,
-    '>': true,
+    "`": true,
+    "\t": true,
+    "\n": true,
+    "}": true,
+    "\r": true,
+    ".": true,
+    ";": true,
+    "<": true,
+    ">": true,
   };
 
   // one pattern per line for now
   let match = null;
-  Object.keys(templates)
-  .forEach((templatesName) => {
+  Object.keys(templates).forEach((templatesName) => {
     const col_start = string.indexOf(templatesName);
     const delimiter = string[col_start + templatesName.length];
     // console.log('col_start', templatesName, string, col_start)
@@ -39,23 +42,34 @@ function utils_parsePatternUsage({ templates }, string, verbose = false, matches
       while (!terminator && string[col_end]) {
         col_end++;
         const char = string[col_end];
-        terminator = (terminators[char] && char !== delimiter) && char;
+        terminator = terminators[char] && char !== delimiter && char;
       }
 
       const items = `${string.slice(col_start, col_end)}`.split(delimiter);
-      if (delimiter === '/' && terminator  === '.') {
+      if (delimiter === "/" && terminator === ".") {
         const popped = items.pop();
         col_end -= popped.length + 1;
       }
 
       if (verbose) {
-        matches.push({ usage: items.join('/'), col_start: col_start + col_offset, col_end: col_end + col_offset, delimiter });
+        matches.push({
+          usage: items.join("/"),
+          col_start: col_start + col_offset,
+          col_end: col_end + col_offset,
+          delimiter,
+        });
       } else {
-        matches.push(items.join('/'));
+        matches.push(items.join("/"));
       }
-      
+
       if (!!string[col_end]) {
-        utils_parsePatternUsage({ templates }, string.slice(col_end), verbose, matches, col_offset + col_end)
+        utils_parsePatternUsage(
+          { templates },
+          string.slice(col_end),
+          verbose,
+          matches,
+          col_offset + col_end
+        );
       }
     }
   });

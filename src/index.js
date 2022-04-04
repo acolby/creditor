@@ -121,7 +121,7 @@ function creditor(given = {}) {
     }
     const { files, templates } = await actions_move(options, {
       template,
-      name,
+      //name,
       name_to,
     });
 

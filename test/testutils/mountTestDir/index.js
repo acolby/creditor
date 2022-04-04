@@ -18,6 +18,17 @@ var copyRecursiveSync = function (src, dest) {
   }
 };
 
+var mkdir = function (dir) {
+  var exists = fs.existsSync(dir);
+  var stats = exists && fs.statSync(dir);
+  var isDirectory = exists && stats.isDirectory();
+  if (isDirectory) {
+    return;
+  } else {
+    fs.mkdirSync(dir);
+  }
+};
+
 var deleteRecursiveSync = function (directoryPath) {
   if (fs.existsSync(directoryPath)) {
     fs.readdirSync(directoryPath).forEach((file, index) => {
@@ -40,6 +51,7 @@ const testutils_mountTestDir = () => {
   const dest = path.join(base, "/.temp/testdir");
 
   deleteRecursiveSync(dest);
+  mkdir(path.join(base, "/.temp"));
   copyRecursiveSync(src, dest);
 
   return {

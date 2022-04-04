@@ -14,7 +14,12 @@ const files = findFiles(`${__dirname}/../src`, [], /test\.js$/).filter(
 files.forEach((item) => {
   mocha.addFile(item);
 });
-mocha.run();
+
+mocha.run((err) => {
+  if (err) {
+    process.exit(1);
+  }
+});
 
 function findFiles(base = "", all = [], condition) {
   const files = fs.readdirSync(base) || [];

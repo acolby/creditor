@@ -16,7 +16,3 @@ jobs:
          node-version: 14.x
       - run: npm ci
       - run: npm test
-      - uses: JS-DevTools/npm-publish@v1
-        with:
-          dry-run: true
-          token: 'no-token'

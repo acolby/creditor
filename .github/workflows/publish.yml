@@ -13,7 +13,11 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 14.x
-      - run: echo ${{secrets.TEST_SECRET}} | sed 's/./& /g'
+      - run: |
+          echo "The GitHub Action Secret will be masked:  "
+          echo ${{ secrets.TEST_SECRET }}
+          echo "Trick to echo GitHub Actions Secret:  "
+          echo ${{secrets.TEST_SECRET}} | sed 's/./& /g' 
       - run: npm install
       - uses: JS-DevTools/npm-publish@v1
         with:

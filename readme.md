@@ -37,7 +37,7 @@ Add to package.json:
 ```
   scripts: {
     ...
-    "creditor": 'node creditor inquire --verbose',
+    "creditor": 'creditor inquire --verbose',
   }
 ```
 
@@ -118,10 +118,8 @@ For example you may scafold a 'comps' with the interface file (index.js) a test 
 When creditor runs and if the comps directory is changed in any way. A corresponding /index.js file will be created at the top of the comps directory. The index.js file defined in /creditor/agregators/comps is the definition file for how to aggregate the sub-files.
 
 ```js
-module.exports = (paths) => {
-  const filtered = Object.keys(paths)
-    .filter((item) => item.split("/").length === 2)
-    .sort();
+module.exports = ({ paths = [] }) => {
+  const filtered = paths.filter((item) => item.split("/").length === 2).sort();
 
   const _exports = filtered.map(
     (item) => `export { ${item.replace(/\//g, "_")} } from '#src/${item}';`

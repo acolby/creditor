@@ -14,12 +14,14 @@ function utils_parsePatternUsage(
 
   const terminators = {
     "(": true,
+    ")": true,
     " ": true,
     "'": true,
     '"': true,
     "`": true,
     "\t": true,
     "\n": true,
+    "{": true,
     "}": true,
     "\r": true,
     ".": true,

@@ -7,6 +7,9 @@ describe("utils_parsePatternUsage", () => {
       "export const dodos_main_item()": ["dodos/main/item"],
       'import {dodos_user} from "#src/dodos/user"': ["dodos/user"],
       'await dodos_user.actions.fetch("userId");': ["dodos/user"],
+      "const user = useSelector((select) => select.dodos_user);": [
+        "dodos/user",
+      ],
       'from "#src/dodos/user"': ["dodos/user"],
     };
 

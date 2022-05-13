@@ -28,6 +28,7 @@ function utils_parsePatternUsage(
     ";": true,
     "<": true,
     ">": true,
+    ",": true,
   };
 
   // one pattern per line for now

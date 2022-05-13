@@ -11,6 +11,7 @@ describe("utils_parsePatternUsage", () => {
         "dodos/user",
       ],
       'from "#src/dodos/user"': ["dodos/user"],
+      "export { selector () => dodos_user, other: true };": ["dodos/user"],
     };
 
     Object.entries(expected).forEach(([given, output]) => {

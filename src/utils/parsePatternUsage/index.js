@@ -58,7 +58,7 @@ function utils_parsePatternUsage(
 
       if (verbose) {
         matches.push({
-          usage: items.join(path.set),
+          usage: items.join(path.sep),
           col_start: col_start + col_offset,
           col_end: col_end + col_offset,
           delimiter,

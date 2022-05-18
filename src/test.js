@@ -54,10 +54,10 @@ describe("creditor", () => {
           "    mod();\n" +
           "  });\n" +
           "});\n";
-        file1 = utils_normalizePath(`comps/${name}/index.js`);
-        file2 = utils_normalizePath(`comps/${name}/test.js`)
-        expect(files[file1]).to.equal(index_expected);
-        expect(files[file2]).to.equal(test_expected);
+        file1 = files[utils_normalizePath(`comps/${name}/index.js`)];
+        file2 = files[utils_normalizePath(`comps/${name}/test.js`)];
+        expect(file1).to.equal(index_expected);
+        expect(file2).to.equal(test_expected);
       });
 
       it("should return an empty object when the pattern doesnt exist", async () => {

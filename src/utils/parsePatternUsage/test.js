@@ -47,7 +47,7 @@ describe("utils_parsePatternUsage", () => {
         utils_normalizePath("dodos/user"),
         utils_normalizePath("dodos/user"),
       ],
-      'const dingos_user_access = requrie("#src/dingos/user/access/index.js")':
+      'const dingos_user_access = require("#src/dingos/user/access/index.js")':
         [utils_normalizePath("dingos/user/access"), utils_normalizePath("dingos/user/access")],
     };
 
@@ -58,7 +58,7 @@ describe("utils_parsePatternUsage", () => {
     });
   });
 
-  it("should provide attional information if verbose is set to true", () => {
+  it("should provide additional information if verbose is set to true", () => {
     const expected = {
       'import {dodos_user} from "#src/dodos/user/index.js"': [
         { usage: utils_normalizePath("dodos/user"), col_start: 8, col_end: 18, delimiter: "_" },
@@ -83,8 +83,10 @@ describe("utils_parsePatternUsage", () => {
 
     Object.entries(expected).forEach(([given, output]) => {
       const res = mod({ templates: { dodos: {}, dingos: {} } }, given, true);
-      expect(JSON.stringify(res[0])).to.equal(JSON.stringify(output[0]));
-      expect(JSON.stringify(res[1])).to.equal(JSON.stringify(output[1]));
+      // expect(JSON.stringify(res[0])).to.equal(JSON.stringify(output[0]));
+      // expect(JSON.stringify(res[1])).to.equal(JSON.stringify(output[1]));
+      expect(res[0]).to.deep.equal(output[0]);
+      expect(res[1]).to.deep.equal(output[1]);
     });
   });
 });

@@ -14,7 +14,6 @@ async function actions_create(options, { template, name }) {
       utils_normalizePath(`${template}/`) + name
     );
   });
-  console.log("🚀 ~ file: index.js ~ line 20 ~ actions_create ~ files", files)
 
   return { files };
 }

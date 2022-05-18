@@ -12,21 +12,19 @@ function utils_renderTemplate(template, usage) {
     .split("\n")
     .map((line) => {
       let rendered = line;
+      //does the line contain a delimeter?
       while (rendered.indexOf("CREDITOR_") > 0) {
         const delimitorKey = Object.keys(delimiters).find((delimitorKey) => {
           return rendered.indexOf(delimitorKey) > -1;
         });
+        //If yes, replace the path seperator ('/', or '\\') with the delimiter
         if (delimitorKey) {
           const delimitor = delimiters[delimitorKey];
-          temp = usage.split(path.sep).join(delimitor)
+
           rendered = rendered.replace(
             delimitorKey,
-            usage.replace(/\//g, delimitor)
+            usage.split(path.sep).join(delimitor)
           );
-          // rendered = rendered.replace(
-          //   delimitorKey,
-          //   usage.split(path.sep).join(delimitor)
-          // );
         } else {
           // console.log('warning: line', line, 'does not porperly use CREDITOR_');
           break;

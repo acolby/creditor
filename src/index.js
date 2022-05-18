@@ -3,6 +3,7 @@ const path = require("path");
 const utils_loadTemplates = require("#src/utils/loadTemplates/index.js");
 const utils_loadAggregators = require("#src/utils/loadAggregators/index.js");
 const utils_analyzeSrc = require("#src/utils/analyzeSrc/index.js");
+const utils_normalizePath = require("#src/utils/normalizePath/index.js");
 
 const actions_create = require("#src/actions/create/index.js");
 const actions_move = require("#src/actions/move/index.js");
@@ -14,9 +15,9 @@ const defaults = {
   path_base: process.cwd(), // location of pactage json
 
   // OPTIONAL
-  rel_templates: "/creditor/templates", // default
-  rel_aggregators: "/creditor/aggregators", // default
-  rel_src: "/src",
+  rel_templates: utils_normalizePath("/creditor/templates"), // default
+  rel_aggregators: utils_normalizePath("/creditor/aggregators"), // default
+  rel_src: utils_normalizePath("/src"),
 };
 
 function creditor(given = {}) {

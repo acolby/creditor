@@ -1,10 +1,14 @@
+const path = require("path");
+
 const fs_directoryTree = require("#src/fs/directoryTree/index.js");
 const fs_processLineByLine = require("#src/fs/processLineByLine/index.js");
 const utils_parsePatternUsage = require("#src/utils/parsePatternUsage/index.js");
 
+
 async function utils_analyzeSrc({ path_src, templates }) {
+
   const allfiles = (await fs_directoryTree(path_src)).map(
-    (location) => location.split(`${path_src}/`)[1]
+    (location) => path.relative(path_src, location)
   );
 
   const uses = {};
@@ -13,17 +17,15 @@ async function utils_analyzeSrc({ path_src, templates }) {
 
   await Promise.all(
     allfiles.map(async (filePath) => {
-      const folderPath = filePath.split("/").slice(0, -1).join("/");
-      const fileName = filePath.split("/").pop();
+      const folderPath = path.parse(filePath).dir//filePath.split("/").slice(0, -1).join("/");
+      const fileName = path.parse(filePath).base //filePath.split("/").pop();
 
       usesInFiles[folderPath] = usesInFiles[folderPath] || {};
       uses[folderPath] = uses[folderPath] || {};
 
       usesInFiles[folderPath][fileName] = {};
 
-      await fs_processLineByLine(
-        `${path_src}/${filePath}`,
-        (line, lineNumber) => {
+      await fs_processLineByLine(path.join(path_src, filePath),(line, lineNumber) => {
           const usages = utils_parsePatternUsage({ templates }, line);
           usages.forEach((usage) => {
             if (usage === folderPath) return;
@@ -35,6 +37,7 @@ async function utils_analyzeSrc({ path_src, templates }) {
         }
       );
     })
+      
   );
 
   usesObj = {};

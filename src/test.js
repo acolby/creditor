@@ -2,6 +2,7 @@ const expect = require("chai").expect;
 const creditor = require("./");
 
 const testutils_mountTestDir = require("#test/testutils/mountTestDir/index.js");
+const utils_normalizePath = require("./utils/normalizePath");
 
 describe("creditor", () => {
   let options;
@@ -15,9 +16,10 @@ describe("creditor", () => {
   describe("init", () => {
     it("Should properly init", async () => {
       const data = await instance.init(options);
-      expect(data.rel_src).to.equal("/src");
-      expect(data.package.uses["comps/root"]["stores/user"]).to.equal(true);
-      expect(data.package.usedBy["stores/user"]["comps/root"]).to.equal(true);
+      // console.log("🚀 ~ file: test.js ~ line 18 ~ it ~ data", data)
+      expect(data.rel_src).to.equal(utils_normalizePath("/src"));
+      expect(data.package.uses[utils_normalizePath("comps/root")][utils_normalizePath("stores/user")]).to.equal(true);
+      expect(data.package.usedBy[utils_normalizePath("stores/user")][utils_normalizePath("comps/root")]).to.equal(true);
     });
   });
 
@@ -27,11 +29,13 @@ describe("creditor", () => {
     });
 
     describe("actions_create", () => {
-      it("should properly create the specified pattern in the spcified location", async () => {
+      it("should properly create the specified pattern in the specified location", async () => {
         const name = "users/login/mainButton";
+        const nameN = utils_normalizePath("users/login/mainButton");
+        const dir = utils_normalizePath("src/comps/users/login/mainButton")
         const { files } = await instance.create({
           template: "comps",
-          name: "users/login/mainButton",
+          name: nameN,
         });
         const index_expected =
           "export const comps_users_login_mainButton = {\n" +
@@ -41,9 +45,8 @@ describe("creditor", () => {
           "    return <div>comps_users_login_mainButton placeholder</div>;\n" +
           "  },\n" +
           "};\n";
-
         const test_expected =
-          'import mod from "@src/comps/users/login/mainButton";\n' +
+          `import mod from "@${dir}";\n` +
           'import expect from "chai";\n' +
           "\n" +
           'describe("comps_users_login_mainButton", () => {\n' +
@@ -51,13 +54,14 @@ describe("creditor", () => {
           "    mod();\n" +
           "  });\n" +
           "});\n";
-
-        expect(files[`comps/${name}/index.js`]).to.equal(index_expected);
-        expect(files[`comps/${name}/test.js`]).to.equal(test_expected);
+        file1 = utils_normalizePath(`comps/${name}/index.js`);
+        file2 = utils_normalizePath(`comps/${name}/test.js`)
+        expect(files[file1]).to.equal(index_expected);
+        expect(files[file2]).to.equal(test_expected);
       });
 
       it("should return an empty object when the pattern doesnt exist", async () => {
-        const name = "users/login/mainButton";
+        const name = utils_normalizePath("users/login/mainButton");
         const expectedErrorMessage = `the template "nonexsistant" is not defined in the templates dir`;
         let actualErrorMessage;
         try {

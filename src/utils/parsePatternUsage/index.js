@@ -1,3 +1,5 @@
+const utils_normalizePath = require("#src/utils/normalizePath/index.js");
+
 function utils_parsePatternUsage(
   { templates },
   string,
@@ -56,13 +58,13 @@ function utils_parsePatternUsage(
 
       if (verbose) {
         matches.push({
-          usage: items.join("/"),
+          usage: utils_normalizePath(items.join("/")),
           col_start: col_start + col_offset,
           col_end: col_end + col_offset,
           delimiter,
         });
       } else {
-        matches.push(items.join("/"));
+        matches.push(utils_normalizePath(items.join("/")));
       }
 
       if (!!string[col_end]) {

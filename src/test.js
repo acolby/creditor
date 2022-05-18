@@ -16,7 +16,7 @@ describe("creditor", () => {
   describe("init", () => {
     it("Should properly init", async () => {
       const data = await instance.init(options);
-      // console.log("🚀 ~ file: test.js ~ line 18 ~ it ~ data", data)
+
       expect(data.rel_src).to.equal(utils_normalizePath("/src"));
       expect(data.package.uses[utils_normalizePath("comps/root")][utils_normalizePath("stores/user")]).to.equal(true);
       expect(data.package.usedBy[utils_normalizePath("stores/user")][utils_normalizePath("comps/root")]).to.equal(true);
@@ -80,14 +80,14 @@ describe("creditor", () => {
           name: "user",
           name_to: "profile",
         });
-        expect(!!files.toCreate["stores/profile/access/index.js"]).to.equal(
+        expect(!!files.toCreate[utils_normalizePath("stores/profile/access/index.js")]).to.equal(
           true
         );
-        expect(!!files.toCreate["stores/profile/index.js"]).to.equal(true);
-        expect(!!files.toDelete["stores/user/access/index.js"]).to.equal(true);
-        expect(!!files.toDelete["stores/user/index.js"]).to.equal(true);
-        expect(!!files.toUpdate["comps/root/index.js"]).to.equal(true);
-        expect(!!files.toUpdate["comps/root/test.js"]).to.equal(false);
+        expect(!!files.toCreate[utils_normalizePath("stores/profile/index.js")]).to.equal(true);
+        expect(!!files.toDelete[utils_normalizePath("stores/user/access/index.js")]).to.equal(true);
+        expect(!!files.toDelete[utils_normalizePath("stores/user/index.js")]).to.equal(true);
+        expect(!!files.toUpdate[utils_normalizePath("comps/root/index.js")]).to.equal(true);
+        expect(!!files.toUpdate[utils_normalizePath("comps/root/test.js")]).to.equal(false);
       });
 
       it("should properly update the template files", async () => {
@@ -96,8 +96,8 @@ describe("creditor", () => {
           name: "user",
           name_to: "profile",
         });
-        expect(!!templates.toUpdate["stores/index.js"]).to.equal(true);
-        expect(!!templates.toUpdate["comps/index.js"]).to.equal(false);
+        expect(!!templates.toUpdate[utils_normalizePath("stores/index.js")]).to.equal(true);
+        expect(!!templates.toUpdate[utils_normalizePath("comps/index.js")]).to.equal(false);
       });
     });
   });

@@ -81,7 +81,7 @@ function creditor(given = {}) {
     if (!name) {
       throw new Error("the location was not specificed");
     }
-    if (options.package.uses[`${template}/${name}`]) {
+    if (options.package.uses[utils_normalizePath(`${template}/${name}`)]) {
       throw new Error(
         `the item (${template}/${name}) you are trying to render already exists `
       );

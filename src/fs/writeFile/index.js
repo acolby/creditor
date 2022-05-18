@@ -1,22 +1,22 @@
 const path = require("path");
 const fs = require("fs");
 
-async function fs_writeFile(path, contents) {
-  const dirPart = path.split("/").slice(0, -1).join("/");
+async function fs_writeFile(dir_path, contents) {
+  const dirPart = dir_path.split(path.sep).slice(0, -1).join(path.sep);
 
   // make the dir
   await mkdirRec(dirPart);
   return new Promise((resolve) => {
-    fs.writeFile(path, contents, function (err) {
+    fs.writeFile(dir_path, contents, function (err) {
       if (err) throw err;
       resolve();
     });
   });
 
   async function mkdirRec(dir, at = 0) {
-    const dirItems = dir.split("/").filter((item) => item);
+    const dirItems = dir.split(path.sep).filter((item) => item);
     if (dirItems.length < at) return;
-    const atDir = `/${dirItems.slice(0, at + 1).join("/")}`;
+    const atDir = dirItems.slice(0, at + 1).join(path.sep);
 
     const stats = await stat(atDir);
     if (stats && stats.isDirectory()) return mkdirRec(dir, at + 1);
@@ -25,16 +25,16 @@ async function fs_writeFile(path, contents) {
     return mkdirRec(dir, at + 1);
   }
 
-  async function stat(path) {
+  async function stat(d_path) {
     return new Promise((resolve, reject) => {
-      fs.stat(path, (err, stats) => {
+      fs.stat(d_path, (err, stats) => {
         resolve(stats);
       });
     });
   }
-  async function mkdir(path) {
+  async function mkdir(d_path) {
     return new Promise((resolve, reject) => {
-      fs.mkdir(path, (err) => {
+      fs.mkdir(d_path, (err) => {
         resolve();
       });
     });

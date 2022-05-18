@@ -1,3 +1,5 @@
+const path = require("path");
+
 const delimiters = {
   CREDITOR_UNDERSCORE_NAME: "_",
   CREDITOR_PERIOD_NAME: ".",
@@ -16,9 +18,10 @@ function utils_renderTemplate(template, usage) {
         });
         if (delimitorKey) {
           const delimitor = delimiters[delimitorKey];
+          temp = usage.split(path.sep).join(delimitor)
           rendered = rendered.replace(
             delimitorKey,
-            usage.replace(/\//g, delimitor)
+            usage.split(path.sep).join(delimitor)
           );
         } else {
           // console.log('warning: line', line, 'does not porperly use CREDITOR_');

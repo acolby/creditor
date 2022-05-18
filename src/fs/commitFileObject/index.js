@@ -48,8 +48,7 @@ async function fs_commitFileObject({
               toWrite.path
             }`
           );
-        return fs_writeFile(`${path_base}/${toWrite.path}`, toWrite.contents);
-      }
+        return fs_writeFile(path_base + path.sep + toWrite.path, toWrite.contents); }
       if (toWrite.action === "update") {
         if (verbose)
           console.log(
@@ -57,7 +56,7 @@ async function fs_commitFileObject({
               toWrite.path
             }`
           );
-        return fs_writeFile(`${path_base}/${toWrite.path}`, toWrite.contents);
+        return fs_writeFile(path_base + path.sep + toWrite.path, toWrite.contents);
       }
       if (toWrite.action === "delete") {
         if (verbose)
@@ -67,7 +66,7 @@ async function fs_commitFileObject({
             }`
           );
         return fs_removeRecursive(
-          `${path_base}/${toWrite.path}`.split("/").slice(0, -1).join("/")
+          (path_base + path.sep + toWrite.path).split(path.sep).slice(0, -1).join(path.sep)
         );
       }
     })

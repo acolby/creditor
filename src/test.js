@@ -67,7 +67,7 @@ describe("creditor", () => {
         try {
           await instance.create({ template: "nonexsistant", name });
         } catch (e) {
-          actualErrorMessage = e.message;
+           actualErrorMessage = e.message;
         }
         expect(actualErrorMessage).to.equal(expectedErrorMessage);
       });

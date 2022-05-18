@@ -11,7 +11,7 @@ function utils_replaceUsage({ templates }, given, usageReplaceMap) {
       verboseUsages.forEach((verboseUsage) => {
         if (usageReplaceMap[verboseUsage.usage]) {
           const delimited = usageReplaceMap[verboseUsage.usage]
-            .split("/")
+            .split(path.sep)
             .join(verboseUsage.delimiter);
           line = `${line.slice(
             0,

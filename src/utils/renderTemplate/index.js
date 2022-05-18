@@ -21,8 +21,12 @@ function utils_renderTemplate(template, usage) {
           temp = usage.split(path.sep).join(delimitor)
           rendered = rendered.replace(
             delimitorKey,
-            usage.split(path.sep).join(delimitor)
+            usage.replace(/\//g, delimitor)
           );
+          // rendered = rendered.replace(
+          //   delimitorKey,
+          //   usage.split(path.sep).join(delimitor)
+          // );
         } else {
           // console.log('warning: line', line, 'does not porperly use CREDITOR_');
           break;

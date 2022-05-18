@@ -1,5 +1,7 @@
 const expect = require("chai").expect;
 const mod = require("./");
+const utils_normalizePath = require("#src/utils/normalizePath/index.js");
+
 
 describe("utils_renderTemplate", () => {
   let template;
@@ -10,7 +12,7 @@ describe("utils_renderTemplate", () => {
       import item from './';
       export const CREDITOR_UNDERSCORE_NAME = item;
     `;
-    usage = "stores/my/name";
+    usage = utils_normalizePath("stores/my/name");
   });
 
   it("should properly render CREDITOR_UNDERSCORE_NAME", () => {

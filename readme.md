@@ -119,7 +119,7 @@ When creditor runs and if the comps directory is changed in any way. A correspon
 
 ```js
 module.exports = ({ paths = [] }) => {
-  const filtered = paths.filter((item) => item.split("/").length === 2).sort();
+  const filtered = paths.filter((item) => item.split(path.sep).length === 2).sort();
 
   const _exports = filtered.map(
     (item) => `export { ${item.replace(/\//g, "_")} } from '#src/${item}';`

@@ -66,12 +66,12 @@ program
     try {
       await instance.init();
       await instance.create({
-        template: location.split("/").filter((item) => item)[0],
+        template: location.split(path.sep).filter((item) => item)[0],
         name: location
-          .split("/")
+          .split(path.sep)
           .filter((item) => item)
           .slice(1)
-          .join("/"),
+          .join(path.sep),
       });
     } catch (e) {
       console.log("ERROR::", e.message, "--", e.stack.split("\n")[0]);
@@ -90,8 +90,8 @@ program
       rel_src: options.src,
       verbose: options.verbose,
     });
-    const template_source = source.split("/").filter((item) => item)[0];
-    const template_dest = dest.split("/").filter((item) => item)[0];
+    const template_source = source.split(path.sep).filter((item) => item)[0];
+    const template_dest = dest.split(path.sep).filter((item) => item)[0];
     if (template_source !== template_dest) {
       throw new Error(
         `the source template (${template_source}) is different than the destination template (${template_dest})`
@@ -102,15 +102,15 @@ program
       const files = await instance.move({
         template: template_source,
         name: source
-          .split("/")
+          .split(path.sep)
           .filter((item) => item)
           .slice(1)
-          .join("/"),
+          .join(path.sep),
         name_to: dest
-          .split("/")
+          .split(path.sep)
           .filter((item) => item)
           .slice(1)
-          .join("/"),
+          .join(path.sep),
       });
     } catch (e) {
       console.log("ERROR::", e.message, "--", e.stack.split("\n")[0]);
@@ -197,9 +197,9 @@ function _prompts() {
             `${input || ""}`
               .replace(/[^a-zA-Z/]/g, "")
               .replace(/\/{2,}/g, "/")
-              .split("/")
+              .split(path.sep)
               .filter((item) => item)
-              .join("/")
+              .join(path.sep)
           )
             return `${input} is not a valid directory of form some/nested/directory`;
           if (input === "/")
@@ -230,9 +230,9 @@ function _prompts() {
             `${input || ""}`
               .replace(/[^a-zA-Z/]/g, "")
               .replace(/\/{2,}/g, "/")
-              .split("/")
+              .split(path.sep)
               .filter((item) => item)
-              .join("/")
+              .join(path.sep)
           )
             return `${input} is not a valid directory of form some/nested/directory`;
           if (input === "/")
@@ -265,9 +265,9 @@ function _prompts() {
             `${input || ""}`
               .replace(/[^a-zA-Z/]/g, "")
               .replace(/\/{2,}/g, "/")
-              .split("/")
+              .split(path.sep)
               .filter((item) => item)
-              .join("/")
+              .join(path.sep)
           )
             return `${input} is not a valid directory of form some/nested/directory`;
           return true;
@@ -286,11 +286,11 @@ function _fuzzySearchPath(input, template, analysis) {
   // default uses by is template
   let usesBy = analysis.package.usesObj[template] || {};
 
-  const segments = sanitized.split("/").slice(0, -1);
+  const segments = sanitized.split(path.sep).slice(0, -1);
   segments.forEach((item) => {
     usesBy = usesBy[item] || {};
   });
-  const prefix = segments.join("/");
+  const prefix = segments.join(path.sep);
   const suggestions = Object.keys(usesBy || {}).map(
     (item) => `${prefix}${(prefix && "/") || ""}${item}/`
   );

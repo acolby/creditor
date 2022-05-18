@@ -52,7 +52,7 @@ function creditor(given = {}) {
   }
   async function aggregate({ template }) {
     if (!template) {
-      throw new Error("a template name was not specificed");
+      throw new Error("a template name was not specified");
     }
     if (!options.aggregators[template]) {
       throw new Error(
@@ -71,7 +71,7 @@ function creditor(given = {}) {
   }
   async function create({ template, name }) {
     if (!template) {
-      throw new Error("a template name was not specificed");
+      throw new Error("a template name was not specified");
     }
     if (!options.templates[template]) {
       throw new Error(
@@ -79,7 +79,7 @@ function creditor(given = {}) {
       );
     }
     if (!name) {
-      throw new Error("the location was not specificed");
+      throw new Error("the location was not specified");
     }
     if (options.package.uses[utils_normalizePath(`${template}/${name}`)]) {
       throw new Error(
@@ -107,7 +107,7 @@ function creditor(given = {}) {
   }
   async function move({ template, name, name_to }) {
     if (!template) {
-      throw new Error("a template name was not specificed");
+      throw new Error("a template name was not specified");
     }
     if (!options.templates[template]) {
       throw new Error(
@@ -115,10 +115,10 @@ function creditor(given = {}) {
       );
     }
     if (!name) {
-      throw new Error("the source location was not specificed");
+      throw new Error("the source location was not specified");
     }
     if (!name_to) {
-      throw new Error("the destination location was not sepcified");
+      throw new Error("the destination location was not specified");
     }
     const { files, templates } = await actions_move(options, {
       template,
@@ -128,7 +128,7 @@ function creditor(given = {}) {
 
     // check if any of the files being created already correspond to an existing file pattern
     Object.keys(files.toCreate || {}).forEach((filePath) => {
-      const usage = filePath.split("/").slice(0, -1).join("/");
+      const usage = filePath.split(path.sep).slice(0, -1).join(path.sep);
       if (options.package.uses[usage]) {
         throw new Error(`creating ${filePath} results in a collision`);
       }

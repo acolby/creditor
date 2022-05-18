@@ -17,8 +17,8 @@ async function utils_analyzeSrc({ path_src, templates }) {
 
   await Promise.all(
     allfiles.map(async (filePath) => {
-      const folderPath = path.parse(filePath).dir//filePath.split("/").slice(0, -1).join("/");
-      const fileName = path.parse(filePath).base //filePath.split("/").pop();
+      const folderPath = path.parse(filePath).dir//filePath.split(path.sep).slice(0, -1).join(path.sep);
+      const fileName = path.parse(filePath).base //filePath.split(path.sep).pop();
 
       usesInFiles[folderPath] = usesInFiles[folderPath] || {};
       uses[folderPath] = uses[folderPath] || {};
@@ -47,13 +47,13 @@ async function utils_analyzeSrc({ path_src, templates }) {
   });
 
   function segmentToObject(output, segment = "") {
-    const first = segment.split("/")[0];
-    const rest = segment.split("/").slice(1);
+    const first = segment.split(path.sep)[0];
+    const rest = segment.split(path.sep).slice(1);
 
     output[first] = output[first] || {};
 
     if (rest.length === 0) return;
-    segmentToObject(output[first], rest.join("/"));
+    segmentToObject(output[first], rest.join(path.sep));
   }
 
   return {

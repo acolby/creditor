@@ -1,5 +1,6 @@
 const utils_replaceUsage = require("#src/utils/replaceUsage/index.js");
 const fs_readFile = require("#src/fs/readFile/index.js");
+const path = require("path");
 
 async function actions_move(
   { package, path_src, path_templates, templates },
@@ -7,8 +8,8 @@ async function actions_move(
 ) {
   const files = { toCreate: {}, toUpdate: {}, toDelete: {} };
   const templatesToUpdate = { toUpdate: {} };
-  const usage_from = `${template}/${name}`;
-  const usage_to = `${template}/${name_to}`;
+  const usage_from = template + path.sep + name; //If templates takes a path rather than folder
+  const usage_to = template + path.sep + name_to;     //must wrap template in pathNormalization
 
   // 1.) find all usages that match the
   const usagesToReplaceMap = {};
@@ -25,11 +26,11 @@ async function actions_move(
       await Promise.all(
         Object.keys(package.usesInFiles[usage] || {}).map(async (fileName) => {
           const contents = await fs_readFile(
-            `${path_src}/${usage}/${fileName}`
+            path_src + path.sep + usage + path.sep + fileName
           );
-          files.toCreate[`${usagesToReplaceMap[usage]}/${fileName}`] =
+          files.toCreate[usagesToReplaceMap[usage] + path.sep + fileName] =
             utils_replaceUsage({ templates }, contents, usagesToReplaceMap);
-          files.toDelete[`${usage}/${fileName}`] = true;
+          files.toDelete[usage + path.sep + fileName ] = true;
         })
       );
 
@@ -45,9 +46,9 @@ async function actions_move(
                   if (!package.usesInFiles[usedByUsage][fileName][usage])
                     return;
                   const contents = await fs_readFile(
-                    `${path_src}/${usedByUsage}/${fileName}`
+                    path_src + path.sep + usedByUsage + path.sep + fileName 
                   );
-                  files.toUpdate[`${usedByUsage}/${fileName}`] =
+                  files.toUpdate[usedByUsage + path.sep + fileName] =
                     utils_replaceUsage(
                       { templates },
                       contents,

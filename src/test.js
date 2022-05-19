@@ -1,4 +1,6 @@
 const expect = require("chai").expect;
+var os = require('os')
+const eol = (os.EOL)
 const creditor = require("./");
 
 const testutils_mountTestDir = require("#test/testutils/mountTestDir/index.js");
@@ -38,26 +40,25 @@ describe("creditor", () => {
           name: nameN,
         });
         const index_expected =
-          "export const comps_users_login_mainButton = {\n" +
-          "  onMount: async () => {},\n" +
-          "\n" +
-          "  render: () => {\n" +
-          "    return <div>comps_users_login_mainButton placeholder</div>;\n" +
-          "  },\n" +
-          "};\n";
+          `export const comps_users_login_mainButton = {${eol}` +
+          `  onMount: async () => {},${eol}` +
+          `${eol}` +
+          `  render: () => {${eol}` +
+          `    return <div>comps_users_login_mainButton placeholder</div>;${eol}` +
+          `  },${eol}` +
+          `};${eol}`;
         const test_expected =
-          `import mod from "@${dir}";\n` +
-          'import expect from "chai";\n' +
-          "\n" +
-          'describe("comps_users_login_mainButton", () => {\n' +
-          '  it("should properly be called", () => {\n' +
-          "    mod();\n" +
-          "  });\n" +
-          "});\n";
-        file1 = files[utils_normalizePath(`comps/${name}/index.js`)];
-        file2 = files[utils_normalizePath(`comps/${name}/test.js`)];
-        expect(file1).to.equal(index_expected);
-        expect(file2).to.equal(test_expected);
+          `import mod from "@src/comps/users/login/mainButton";${eol}` +
+          `import expect from "chai";${eol}` +
+          `${eol}` +
+          `describe("comps_users_login_mainButton", () => {${eol}` +
+          `  it("should properly be called", () => {${eol}` +
+          `    mod();${eol}` +
+          `  });${eol}` +
+          `});${eol}`;
+
+        expect(files[utils_normalizePath(`comps/${name}/index.js`)]).to.equal(index_expected);
+        expect(files[utils_normalizePath(`comps/${name}/test.js`)]).to.equal(test_expected);
       });
 
       it("should return an empty object when the pattern doesnt exist", async () => {

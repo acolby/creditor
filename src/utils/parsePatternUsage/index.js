@@ -25,7 +25,7 @@ function utils_parsePatternUsage(
     "\n": true,
     "{": true,
     "}": true,
-    "\r": true,
+    "\r": false,
     ".": true,
     ";": true,
     "<": true,

@@ -2,7 +2,7 @@ const expect = require("chai").expect;
 const mod = require("./");
 
 describe("utils_replaceUsage", () => {
-  it("should properlty replace an entire rendered template with file with the items given in the map", () => {
+  it("should properly replace an entire rendered template with file with the items given in the map", () => {
     const given = `
       import {stores_user} from '#src/stores/user/index.js';
       import {stores_user_access} from '#src/stores/user/access/index.js';

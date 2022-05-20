@@ -1,4 +1,6 @@
 const path = require("path");
+var os = require('os')
+const eol = (os.EOL)
 
 function utils_parsePatternUsage(
   { templates },
@@ -13,7 +15,7 @@ function utils_parsePatternUsage(
     ".": true,
     "-": true,
   };
-
+  
   const terminators = {
     "(": true,
     ")": true,
@@ -22,10 +24,10 @@ function utils_parsePatternUsage(
     '"': true,
     "`": true,
     "\t": true,
-    "\n": true,
+    [eol]: true,  //does this need to be eol terminator?
     "{": true,
     "}": true,
-    "\r": false,
+    "\r": true,
     ".": true,
     ";": true,
     "<": true,

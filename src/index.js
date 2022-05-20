@@ -13,7 +13,7 @@ const actions_aggregate = require("#src/actions/aggregate/index.js");
 const fs_commitFileObject = require("#src/fs/commitFileObject/index.js");
 
 const defaults = {
-  path_base: process.cwd(), // location of pactage json
+  path_base: process.cwd(), // location of package json
 
   // OPTIONAL
   rel_templates: utils_normalizePath("/creditor/templates"), // default

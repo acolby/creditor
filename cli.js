@@ -5,6 +5,7 @@ const fuzzy = require("fuzzy-filter");
 const package = require("./package.json");
 const creditor = require("./src");
 const utils_prompt = require("./src/utils/prompt");
+const path = require("path");
 
 const program = new Command();
 
@@ -196,13 +197,13 @@ function _prompts() {
             input !==
             `${input || ""}`
               .replace(/[^a-zA-Z/]/g, "")
-              .replace(/\/{2,}/g, "/")
+              .replace(/\/{2,}/g, path.sep)
               .split(path.sep)
               .filter((item) => item)
               .join(path.sep)
           )
             return `${input} is not a valid directory of form some/nested/directory`;
-          if (input === "/")
+          if (input === path.sep)
             return `Template can not be created at the top of the /${answers.template} directory`;
           if (analysis.package.uses[`${answers.template}/${input}`])
             return `${input} already exists within /${answers.template}/`;
@@ -229,13 +230,13 @@ function _prompts() {
             input !==
             `${input || ""}`
               .replace(/[^a-zA-Z/]/g, "")
-              .replace(/\/{2,}/g, "/")
+              .replace(/\/{2,}/g, path.sep)
               .split(path.sep)
               .filter((item) => item)
               .join(path.sep)
           )
             return `${input} is not a valid directory of form some/nested/directory`;
-          if (input === "/")
+          if (input === path.sep)
             return `You may not not move the root /${answers.template} directory`;
           if (!analysis.package.uses[`${answers.template}/${input}`])
             return `${input} is not an existing directory`;
@@ -264,7 +265,7 @@ function _prompts() {
             input !==
             `${input || ""}`
               .replace(/[^a-zA-Z/]/g, "")
-              .replace(/\/{2,}/g, "/")
+              .replace(/\/{2,}/g, path.sep)
               .split(path.sep)
               .filter((item) => item)
               .join(path.sep)
@@ -281,7 +282,7 @@ function _prompts() {
 function _fuzzySearchPath(input, template, analysis) {
   const sanitized = `${input || ""}`
     .replace(/[^a-zA-Z/]/g, "")
-    .replace(/\/{2,}/g, "/");
+    .replace(/\/{2,}/g, path.sep);
 
   // default uses by is template
   let usesBy = analysis.package.usesObj[template] || {};
@@ -292,7 +293,7 @@ function _fuzzySearchPath(input, template, analysis) {
   });
   const prefix = segments.join(path.sep);
   const suggestions = Object.keys(usesBy || {}).map(
-    (item) => `${prefix}${(prefix && "/") || ""}${item}/`
+    (item) => `${prefix}${(prefix && path.sep) || ""}${item}/`
   );
   const results = fuzzy(sanitized, suggestions || []).sort((a, b) => {
     return a.length - b.length;

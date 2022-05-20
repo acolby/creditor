@@ -44,15 +44,15 @@ async function fs_commitFileObject({
       if (toWrite.action === "create") {
         if (verbose)
           console.log(
-            `${chalk.green("CREATE")} ${rel_base}${(rel_base && "/") || ""}${
+            (`${chalk.green("CREATE")} ${rel_base}${(rel_base && path.sep) || ""}${
               toWrite.path
-            }`
+            }`)
           );
         return fs_writeFile(path_base + path.sep + toWrite.path, toWrite.contents); }
       if (toWrite.action === "update") {
         if (verbose)
           console.log(
-            `${chalk.yellow("UPDATE")} ${rel_base}${(rel_base && "/") || ""}${
+            `${chalk.yellow("UPDATE")} ${rel_base}${(rel_base && path.sep) || ""}${
               toWrite.path
             }`
           );
@@ -61,7 +61,7 @@ async function fs_commitFileObject({
       if (toWrite.action === "delete") {
         if (verbose)
           console.log(
-            `${chalk.red("DELETE")} ${rel_base}${(rel_base && "/") || ""}${
+            `${chalk.red("DELETE")} ${rel_base}${(rel_base && path.sep) || ""}${
               toWrite.path
             }`
           );

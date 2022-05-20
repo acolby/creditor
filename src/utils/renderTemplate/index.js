@@ -1,4 +1,6 @@
 const path = require("path");
+var os = require('os')
+const eol = (os.EOL)
 
 const delimiters = {
   CREDITOR_UNDERSCORE_NAME: "_",
@@ -9,7 +11,7 @@ const delimiters = {
 
 function utils_renderTemplate(template, usage) {
   return template
-    .split("\n")
+    .split(eol)
     .map((line) => {
       let rendered = line;
       //does the line contain a delimeter?
@@ -32,7 +34,7 @@ function utils_renderTemplate(template, usage) {
       }
       return rendered;
     })
-    .join("\n");
+    .join(eol);
 }
 
 module.exports = utils_renderTemplate;

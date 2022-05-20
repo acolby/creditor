@@ -89,7 +89,7 @@ describe("creditor", () => {
         expect(!!files.toDelete[utils_normalizePath("stores/user/index.js")]).to.equal(true);
         expect(!!files.toUpdate[utils_normalizePath("comps/root/index.js")]).to.equal(true);
         expect(!!files.toUpdate[utils_normalizePath("comps/root/test.js")]).to.equal(false);
-      });
+      });~
 
       it("should properly update the template files", async () => {
         const { templates } = await instance.move({

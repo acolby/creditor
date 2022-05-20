@@ -53,7 +53,7 @@ templates are outputted to whatever output directory defined in config.js.
 
 ## Defining Templates
 
-Templates are simply files. They are generic items that contain keywords known to creditor (Creditor Keywords). The template name is the name of the folder nthey are defined in.
+Templates are simply files. They are generic items that contain keywords known to creditor (Creditor Keywords). The template name is the name of the folder they are defined in.
 
 #### template example
 
@@ -70,11 +70,11 @@ function CREDITOR_UNDERSCORE_NAME(props) {
 export default CREDITOR_UNDERSCORE_NAME;
 ```
 
-Now, runing creditor will allow you to create a 'comps' item, where the location of the item will deterine what gets swaped out with the Creditor Keyword (CREDITOR_UNDERSOCRE_NAME).
+Now, runing creditor will allow you to create a 'comps' item, where the location of the item will determine what gets swapped out with the Creditor Keyword (CREDITOR_UNDERSOCRE_NAME).
 
-It is import to understand that a creditor template directory is allowed to contain mulitiple files. All of the tiles will be created in the output directory when runing creditor. This allows you to scafold any sort of File Pattern you wish.
+It is import to understand that a creditor template directory is allowed to contain multiple files. All of the tiles will be created in the output directory when running creditor. This allows you to scaffold any sort of File Pattern you wish.
 
-For example you may scafold a 'comps' with the interface file (index.js) a test file and a scss file
+For example you may scaffold a 'comps' with the interface file (index.js) a test file and a scss file
 
 ```
   /_ creditor
@@ -87,12 +87,12 @@ For example you may scafold a 'comps' with the interface file (index.js) a test 
 
 ### Creditor Keywords
 
-The folloing keywords within your template files will be swaped out with the created template.
+The following keywords within your template files will be swapped out with the created template.
 
-- CREDITOR_UNDERSCORE_NAME -> name of component deniniated by '\*'
-- CREDITOR_PERIOD_NAME -> name of component deniniated by '.'
-- CREDITOR_DASH_NAME -> name of component deniniated by '-'
-- CREDITOR_SLASH_NAME -> name of component deniniated by '/'
+- CREDITOR_UNDERSCORE_NAME -> name of component deliniated by '\*'
+- CREDITOR_PERIOD_NAME -> name of component deliniated by '.'
+- CREDITOR_DASH_NAME -> name of component deliniated by '-'
+- CREDITOR_SLASH_NAME -> name of component deliniated by '/'
 
 ## Defining Aggregators
 
@@ -104,9 +104,9 @@ It is often desired to take files witin a given directory and aggregate them wit
 
 Creditor provides a mechinisem for defining how items witin a directory should be merged programatically. This allows deveoplers to focus on developing the items rather then updating the proper boilerplate agregator files.
 
-Similarly to templates, aggregators are defined witing the creditor directory
+Similarly to templates, aggregators are defined within the creditor directory
 
-For example you may scafold a 'comps' with the interface file (index.js) a test file and a scss file
+For example you may scaffold a 'comps' with the interface file (index.js) a test file and a scss file
 
 ```
   /_ creditor

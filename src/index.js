@@ -116,7 +116,7 @@ function creditor(given = {}) {
       );
     }
     if (!name) {
-      throw new Error("the source location was not specified");
+      throw new Error("the source location r not specified");
     }
     if (!name_to) {
       throw new Error("the destination location was not specified");

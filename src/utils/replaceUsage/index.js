@@ -1,8 +1,11 @@
 const parsePatternUsage = require("#src/utils/parsePatternUsage/index.js");
+const path = require('path');
+var os = require('os');
+const eol = (os.EOL);
 
 function utils_replaceUsage({ templates }, given, usageReplaceMap) {
   return given
-    .split("\n")
+    .split(eol)
     .map((line) => {
       const verboseUsages = parsePatternUsage({ templates }, line, true).sort(
         (itemA, itemB) => itemB.col_start - itemA.col_start
@@ -22,7 +25,7 @@ function utils_replaceUsage({ templates }, given, usageReplaceMap) {
 
       return line;
     })
-    .join("\n");
+    .join(eol);
 }
 
 module.exports = utils_replaceUsage;

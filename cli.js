@@ -268,7 +268,6 @@ function _prompts() {
             `${input || ""}`
               .replace(/[^(a-zA-Z)/|\\]/g, "")
               .replace(/\/{2,}|\\{3,}/g, path.sep)
-
               .split(path.sep)
               .filter((item) => item)
               .join(path.sep)
@@ -285,13 +284,13 @@ function _prompts() {
 function _fuzzySearchPath(input, template, analysis) {
   const sanitized = `${input || ""}`
     .replace(/[^(a-zA-Z)/|\\]/g, "")
-              .replace(/\/{2,}|\\{3,}/g, path.sep)
+    .replace(/\/{2,}|\\{3,}/g, path.sep)
 ;
 
   // default uses by is template
   let usesBy = analysis.package.usesObj[template] || {};
 
-  const segments = sanitized.split(path.sep).slice(0, -1);
+  const segments = path.normalize(sanitized).split(path.sep).slice(0, -1);
   segments.forEach((item) => {
     usesBy = usesBy[item] || {};
   });
@@ -299,7 +298,7 @@ function _fuzzySearchPath(input, template, analysis) {
   const suggestions = Object.keys(usesBy || {}).map(
     (item) => `${prefix}${(prefix && path.sep) || ""}${item + path.sep}`
   );
-  const results = fuzzy(sanitized, suggestions || []).sort((a, b) => {
+  const results = fuzzy(path.normalize(sanitized), suggestions || []).sort((a, b) => {
     return a.length - b.length;
   });
   return [sanitized, ...results];

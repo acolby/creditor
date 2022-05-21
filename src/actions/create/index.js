@@ -10,9 +10,9 @@ async function actions_create(options, { template, name }) {
   templateOptions.files.forEach((file) => {
     const templatePath = options.path_templates + path.normalize(`/${template}/${file}`);
     const rawTemplate = fs.readFileSync(templatePath, "utf8");
-    files[path.normalize(`${template}/`) + name + path.normalize(`/${file}`)] = utils_renderTemplate(
+    files[path.normalize(`${template}/` + name +`/${file}`)] = utils_renderTemplate(
       rawTemplate,
-      path.normalize(`${template}/`) + name
+      path.normalize(`${template}/` + name)
     );
   });
 

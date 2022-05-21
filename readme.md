@@ -115,17 +115,25 @@ For example you may scaffold a 'comps' with the interface file (index.js) a test
         /_ index.js
 ```
 
-When creditor runs and if the comps directory is changed in any way. A corresponding /index.js file will be created at the top of the comps directory. The index.js file defined in /creditor/agregators/comps is the definition file for how to aggregate the sub-files.
+When creditor runs and if the comps directory is changed in any way. A corresponding /index.js file will be created at the top of the comps directory. The index.js file defined in /creditor/aggregators/comps is the definition file for how to aggregate the sub-files.
 
 ```js
+var os = require('os')
+const eol = (os.EOL)
+const path = require('path')
+const slash = require('slash')
 module.exports = ({ paths = [] }) => {
-  const filtered = paths.filter((item) => item.split(path.sep).length === 2).sort();
 
-  const _exports = filtered.map(
-    (item) => `export { ${item.replace(/\//g, "_")} } from '#src/${item}';`
-  );
+  const filtered = paths
+    .filter(item => item.split(path.sep).length === 2)
+    .sort();
+  
+  const _exports = filtered
+    .map(item => {
+      const importPath = slash(`#src/${item}`);
+      return `export { ${item.split(path.sep).join('_')} } from '${importPath}';`});  //incorporate path.sep
 
-  return ["", ..._exports, ""].join("\n");
+  return ['', ..._exports, ''].join(eol);
 };
 ```
 

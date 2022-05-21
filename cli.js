@@ -193,11 +193,12 @@ function _prompts() {
         },
         validate: (input) => {
           if (!input) return "This question is required";
+          input = path.normalize(input);
           if (
             input !==
             `${input || ""}`
-              .replace(/[^a-zA-Z/]/g, "")
-              .replace(/\/{2,}/g, path.sep)
+              .replace(/[^(a-zA-Z)/|\\]/g, "")
+              .replace(/\/{2,}|\\{3,}/g, path.sep)
               .split(path.sep)
               .filter((item) => item)
               .join(path.sep)
@@ -226,11 +227,12 @@ function _prompts() {
         },
         validate: (input) => {
           if (!input) return "This question is required";
+          input = path.normalize(input);
           if (
             input !==
             `${input || ""}`
-              .replace(/[^a-zA-Z/]/g, "")
-              .replace(/\/{2,}/g, path.sep)
+              .replace(/[^(a-zA-Z)/|\\]/g, "")
+              .replace(/\/{2,}|\\{3,}/g, path.sep)
               .split(path.sep)
               .filter((item) => item)
               .join(path.sep)
@@ -264,8 +266,9 @@ function _prompts() {
           if (
             input !==
             `${input || ""}`
-              .replace(/[^a-zA-Z/]/g, "")
-              .replace(/\/{2,}/g, path.sep)
+              .replace(/[^(a-zA-Z)/|\\]/g, "")
+              .replace(/\/{2,}|\\{3,}/g, path.sep)
+
               .split(path.sep)
               .filter((item) => item)
               .join(path.sep)
@@ -281,8 +284,9 @@ function _prompts() {
 
 function _fuzzySearchPath(input, template, analysis) {
   const sanitized = `${input || ""}`
-    .replace(/[^a-zA-Z/]/g, "")
-    .replace(/\/{2,}/g, path.sep);
+    .replace(/[^(a-zA-Z)/|\\]/g, "")
+              .replace(/\/{2,}|\\{3,}/g, path.sep)
+;
 
   // default uses by is template
   let usesBy = analysis.package.usesObj[template] || {};
@@ -293,7 +297,7 @@ function _fuzzySearchPath(input, template, analysis) {
   });
   const prefix = segments.join(path.sep);
   const suggestions = Object.keys(usesBy || {}).map(
-    (item) => `${prefix}${(prefix && path.sep) || ""}${item}/`
+    (item) => `${prefix}${(prefix && path.sep) || ""}${item + path.sep}`
   );
   const results = fuzzy(sanitized, suggestions || []).sort((a, b) => {
     return a.length - b.length;

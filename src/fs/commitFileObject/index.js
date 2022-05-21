@@ -41,6 +41,7 @@ async function fs_commitFileObject({
 
   return Promise.all(
     (toWrite || []).map((toWrite) => {
+      toWrite.path = path.normalize(toWrite.path)
       if (toWrite.action === "create") {
         if (verbose)
           console.log(
@@ -56,6 +57,8 @@ async function fs_commitFileObject({
               toWrite.path
             }`
           );
+          console.log("🚀 ~ file: index.js ~ line 57 ~ `${chalk.yellow ~ toWrite.path", toWrite.path);
+
         return fs_writeFile(path_base + path.sep + toWrite.path, toWrite.contents);
       }
       if (toWrite.action === "delete") {

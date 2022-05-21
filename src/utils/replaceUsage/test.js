@@ -1,5 +1,6 @@
 const expect = require("chai").expect;
-const utils_normalizePath = require("#src/utils/normalizePath/index.js");
+const path = require('path')
+;
 
 const mod = require("./");
 
@@ -16,10 +17,10 @@ describe("utils_replaceUsage", () => {
 
       exports comps_user_login;
     `;
-    userFrom = utils_normalizePath("stores/user");
-    userTo = utils_normalizePath("stores/profile");
-    userF = utils_normalizePath("stores/user/access");
-    userT = utils_normalizePath("stores/profile/access");
+    userFrom = path.normalize("stores/user");
+    userTo = path.normalize("stores/profile");
+    userF = path.normalize("stores/user/access");
+    userT = path.normalize("stores/profile/access");
     const replaceMap = {
       [userFrom] : userTo,
       [userF]: userT

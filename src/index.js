@@ -4,7 +4,6 @@ const path = require("path");
 const utils_loadTemplates = require("#src/utils/loadTemplates/index.js");
 const utils_loadAggregators = require("#src/utils/loadAggregators/index.js");
 const utils_analyzeSrc = require("#src/utils/analyzeSrc/index.js");
-const utils_normalizePath = require("#src/utils/normalizePath/index.js");
 
 const actions_create = require("#src/actions/create/index.js");
 const actions_move = require("#src/actions/move/index.js");
@@ -16,9 +15,9 @@ const defaults = {
   path_base: process.cwd(), // location of package json
 
   // OPTIONAL
-  rel_templates: utils_normalizePath("/creditor/templates"), // default
-  rel_aggregators: utils_normalizePath("/creditor/aggregators"), // default
-  rel_src: utils_normalizePath("/src"),
+  rel_templates: path.normalize("/creditor/templates"), // default
+  rel_aggregators: path.normalize("/creditor/aggregators"), // default
+  rel_src: path.normalize("/src"),
 };
 
 function creditor(given = {}) {
@@ -82,7 +81,7 @@ function creditor(given = {}) {
     if (!name) {
       throw new Error("the location was not specified");
     }
-    if (options.package.uses[utils_normalizePath(`${template}/${name}`)]) {
+    if (options.package.uses[path.normalize(`${template}/${name}`)]) {
       throw new Error(
         `the item (${template}/${name}) you are trying to render already exists `
       );

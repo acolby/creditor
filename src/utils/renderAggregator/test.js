@@ -1,10 +1,11 @@
 const expect = require("chai").expect;
 const mod = require("./");
-const utils_normalizePath = require("#src/utils/normalizePath/index.js");
+const path = require('path')
+;
 
 describe("utils_renderAggregator", () => {
   let template;
-  const myTestPath = utils_normalizePath("stores/my/name")
+  const myTestPath = path.normalize("stores/my/name")
   beforeEach(() => {
     aggregator = (package, helpers) => {
       return `rendered`;

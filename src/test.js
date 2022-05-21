@@ -2,9 +2,9 @@ const expect = require("chai").expect;
 var os = require('os')
 const eol = (os.EOL)
 const creditor = require("./");
+const path = require('path')
 
 const testutils_mountTestDir = require("#test/testutils/mountTestDir/index.js");
-const utils_normalizePath = require("./utils/normalizePath");
 
 describe("creditor", () => {
   let options;
@@ -19,9 +19,9 @@ describe("creditor", () => {
     it("Should properly init", async () => {
       const data = await instance.init(options);
 
-      expect(data.rel_src).to.equal(utils_normalizePath("/src"));
-      expect(data.package.uses[utils_normalizePath("comps/root")][utils_normalizePath("stores/user")]).to.equal(true);
-      expect(data.package.usedBy[utils_normalizePath("stores/user")][utils_normalizePath("comps/root")]).to.equal(true);
+      expect(data.rel_src).to.equal(path.normalize("/src"));
+      expect(data.package.uses[path.normalize("comps/root")][path.normalize("stores/user")]).to.equal(true);
+      expect(data.package.usedBy[path.normalize("stores/user")][path.normalize("comps/root")]).to.equal(true);
     });
   });
 
@@ -33,8 +33,8 @@ describe("creditor", () => {
     describe("actions_create", () => {
       it("should properly create the specified pattern in the specified location", async () => {
         const name = "users/login/mainButton";
-        const nameN = utils_normalizePath("users/login/mainButton");
-        const dir = utils_normalizePath("src/comps/users/login/mainButton")
+        const nameN = path.normalize("users/login/mainButton");
+        const dir = path.normalize("src/comps/users/login/mainButton")
         const { files } = await instance.create({
           template: "comps",
           name: nameN,
@@ -57,12 +57,12 @@ describe("creditor", () => {
           `  });${eol}` +
           `});${eol}`;
 
-        expect(files[utils_normalizePath(`comps/${name}/index.js`)]).to.equal(index_expected);
-        expect(files[utils_normalizePath(`comps/${name}/test.js`)]).to.equal(test_expected);
+        expect(files[path.normalize(`comps/${name}/index.js`)]).to.equal(index_expected);
+        expect(files[path.normalize(`comps/${name}/test.js`)]).to.equal(test_expected);
       });
 
       it("should return an empty object when the pattern doesnt exist", async () => {
-        const name = utils_normalizePath("users/login/mainButton");
+        const name = path.normalize("users/login/mainButton");
         const expectedErrorMessage = `the template "nonexsistant" is not defined in the templates dir`;
         let actualErrorMessage;
         try {
@@ -81,14 +81,14 @@ describe("creditor", () => {
           name: "user",
           name_to: "profile",
         });
-        expect(!!files.toCreate[utils_normalizePath("stores/profile/access/index.js")]).to.equal(
+        expect(!!files.toCreate[path.normalize("stores/profile/access/index.js")]).to.equal(
           true
         );
-        expect(!!files.toCreate[utils_normalizePath("stores/profile/index.js")]).to.equal(true);
-        expect(!!files.toDelete[utils_normalizePath("stores/user/access/index.js")]).to.equal(true);
-        expect(!!files.toDelete[utils_normalizePath("stores/user/index.js")]).to.equal(true);
-        expect(!!files.toUpdate[utils_normalizePath("comps/root/index.js")]).to.equal(true);
-        expect(!!files.toUpdate[utils_normalizePath("comps/root/test.js")]).to.equal(false);
+        expect(!!files.toCreate[path.normalize("stores/profile/index.js")]).to.equal(true);
+        expect(!!files.toDelete[path.normalize("stores/user/access/index.js")]).to.equal(true);
+        expect(!!files.toDelete[path.normalize("stores/user/index.js")]).to.equal(true);
+        expect(!!files.toUpdate[path.normalize("comps/root/index.js")]).to.equal(true);
+        expect(!!files.toUpdate[path.normalize("comps/root/test.js")]).to.equal(false);
       });~
 
       it("should properly update the template files", async () => {
@@ -97,8 +97,8 @@ describe("creditor", () => {
           name: "user",
           name_to: "profile",
         });
-        expect(!!templates.toUpdate[utils_normalizePath("stores/index.js")]).to.equal(true);
-        expect(!!templates.toUpdate[utils_normalizePath("comps/index.js")]).to.equal(false);
+        expect(!!templates.toUpdate[path.normalize("stores/index.js")]).to.equal(true);
+        expect(!!templates.toUpdate[path.normalize("comps/index.js")]).to.equal(false);
       });
     });
   });

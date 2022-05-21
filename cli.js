@@ -16,7 +16,7 @@ program
 
 program
   .command("inquire")
-  .description("Have the command prop walk you through the runnning creditor")
+  .description("Have the command prop walk you through the running creditor")
   .option("--src", 'location of of your source code (default: "/src")')
   .option("--verbose", "show additional information")
   .action(async (options) => {
@@ -185,7 +185,7 @@ function _prompts() {
         type: "autocomplete",
         name: "mkLoc",
         suggestOnly: true,
-        message: `Where would you like to put the new "${answers.template}" within /${answers.template}/?`,
+        message: `Where would you like to put the new "${answers.template}" within ${path.sep + answers.template + path.sep}?`,
         source: async (_, input) => {
           return Promise.resolve(
             _fuzzySearchPath(input, answers.template, analysis)
@@ -202,11 +202,11 @@ function _prompts() {
               .filter((item) => item)
               .join(path.sep)
           )
-            return `${input} is not a valid directory of form some/nested/directory`;
+            return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
           if (input === path.sep)
-            return `Template can not be created at the top of the /${answers.template} directory`;
-          if (analysis.package.uses[`${answers.template}/${input}`])
-            return `${input} already exists within /${answers.template}/`;
+            return `Template can not be created at the top of the ${path.sep + answers.template} directory`;
+          if (analysis.package.uses[`${answers.template + path.sep + input}`])
+            return `${input} already exists within ${path.sep + answers.template + path.sep}`;
           return true;
         },
         nextPrompt() {},
@@ -235,10 +235,10 @@ function _prompts() {
               .filter((item) => item)
               .join(path.sep)
           )
-            return `${input} is not a valid directory of form some/nested/directory`;
+            return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
           if (input === path.sep)
-            return `You may not not move the root /${answers.template} directory`;
-          if (!analysis.package.uses[`${answers.template}/${input}`])
+            return `You may not not move the root ${path.sep + answers.template} directory`;
+          if (!analysis.package.uses[`${answers.template + path.sep + input}`])
             return `${input} is not an existing directory`;
           return true;
         },
@@ -270,7 +270,7 @@ function _prompts() {
               .filter((item) => item)
               .join(path.sep)
           )
-            return `${input} is not a valid directory of form some/nested/directory`;
+            return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
           return true;
         },
         nextPrompt() {},

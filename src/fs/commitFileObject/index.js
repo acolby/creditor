@@ -57,7 +57,6 @@ async function fs_commitFileObject({
               toWrite.path
             }`
           );
-          console.log("🚀 ~ file: index.js ~ line 57 ~ `${chalk.yellow ~ toWrite.path", toWrite.path);
 
         return fs_writeFile(path_base + path.sep + toWrite.path, toWrite.contents);
       }

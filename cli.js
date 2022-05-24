@@ -19,37 +19,37 @@ program
   .description("Have the command prop walk you through the running creditor")
   .option("--src", 'location of of your source code (default: "/src")')
   .option("--verbose", "show additional information")
+  .option("--repeat", "relaunch Creditor after completion (for multiple operations)", false)
   .action(async (options) => {
-    const instance = creditor({
-      rel_src: options.src,
-      verbose: options.verbose,
-    });
-    await instance.init();
-    const prompts = _prompts();
-    const answers = {}; // where the answers will be stored
-    const analysis = {
-      templates: instance.options.templates,
-      package: instance.options.package,
-    };
-    await utils_prompt("action", { prompts, answers, analysis });
+    
+    const prompts = _prompts(); // where the answers will be stored
+    const answers = {};
+    answers["repeat"] = options.repeat;   
 
-    if (answers.action === "create") {
-      await instance.create({
-        template: answers.template,
-        name: answers.mkLoc,
-      });
-    } else if (answers.action === "move") {
-      await instance.move({
-        template: answers.template,
-        name: answers.mvSrc,
-        name_to: answers.mvDest,
-      });
-    } else if (answers.action === "aggregate") {
-      await instance.aggregate({
-        template: answers.template,
-      });
-    }
-  });
+    do {
+      const credInfo = await initCred(options);
+      const instance = credInfo[0];
+      const analysis = credInfo[1];
+      await utils_prompt("action", { prompts, answers, analysis });
+      if (answers.action === "create") {
+        await instance.create({
+          template: answers.template,
+          name: answers.mkLoc,
+        });
+      } else if (answers.action === "move") {
+        await instance.move({
+          template: answers.template,
+          name: answers.mvSrc,
+          name_to: answers.mvDest,
+        });
+      } else if (answers.action === "aggregate") {
+        await instance.aggregate({
+          template: answers.template,
+        });
+      } 
+      if (answers.repeat) console.log("Action complete. Press CTRL + C to exit script")
+    }while (options.repeat);
+    });
 
 program
   .command("create <destination>")
@@ -206,11 +206,11 @@ function _prompts() {
             return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
           if (input === path.sep)
             return `Template can not be created at the top of the ${path.sep + answers.template} directory`;
-          if (analysis.package.uses[`${answers.template + path.sep + input}`])
-            return `${input} already exists within ${path.sep + answers.template + path.sep}`;
+          if (analysis.package.uses[path.normalize(answers.template + path.sep + input)])
+            return `${path.normalize(input)} already exists within ${path.sep + answers.template + path.sep}`;
           return true;
         },
-        nextPrompt() {},
+        nextPrompt(){},
       };
     },
     mvSrc: (params) => {
@@ -240,8 +240,8 @@ function _prompts() {
             return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
           if (input === path.sep)
             return `You may not not move the root ${path.sep + answers.template} directory`;
-          if (!analysis.package.uses[path.normalize(answers.template + path.sep + input)]) //fix dir empty fail
-            return `${input} is not an existing directory`;
+          if (!analysis.package.uses[path.normalize(answers.template + path.sep + input)])
+            return `${path.normalize(input)} is not an existing directory`;
           return true;
         },
         nextPrompt() {
@@ -280,6 +280,20 @@ function _prompts() {
     },
   };
 }
+
+async function initCred(options){
+    const instance = creditor({
+      rel_src: options.src,
+      verbose: options.verbose,
+    });
+    await instance.init();
+    const analysis = {
+      templates: instance.options.templates,
+      package: instance.options.package,
+    };
+    return [instance, analysis];
+}
+
 
 function _fuzzySearchPath(input, template, analysis) {
   const sanitized = `${input || ""}`

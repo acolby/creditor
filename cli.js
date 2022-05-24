@@ -240,7 +240,7 @@ function _prompts() {
             return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
           if (input === path.sep)
             return `You may not not move the root ${path.sep + answers.template} directory`;
-          if (!analysis.package.uses[`${answers.template + path.sep + input}`])
+          if (!analysis.package.uses[path.normalize(answers.template + path.sep + input)]) //fix dir empty fail
             return `${input} is not an existing directory`;
           return true;
         },

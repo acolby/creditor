@@ -130,7 +130,7 @@ function creditor(given = {}) {
     Object.keys(files.toCreate || {}).forEach((filePath) => {
       const usage = filePath.split(path.sep).slice(0, -1).join(path.sep);
       if (options.package.uses[usage]) {
-        throw new Error(`creating ${filePath} results in a collision`);
+        throw new Error(`creating ${filePath} results in a collision`); //needs to be fixed to remove unnecessary collisions
       }
     });
     await fs_commitFileObject({

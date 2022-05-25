@@ -1,5 +1,6 @@
 const expect = require("chai").expect;
 const creditor = require("./");
+// const slash = require("slash");
 
 const testutils_mountTestDir = require("#test/testutils/mountTestDir/index.js");
 
@@ -27,7 +28,7 @@ describe("creditor", () => {
     });
 
     describe("actions_create", () => {
-      it("should properly create the specified pattern in the spcified location", async () => {
+      it("should properly create the specified pattern in the specified location", async () => {
         const name = "users/login/mainButton";
         const { files } = await instance.create({
           template: "comps",
@@ -58,10 +59,10 @@ describe("creditor", () => {
 
       it("should return an empty object when the pattern doesnt exist", async () => {
         const name = "users/login/mainButton";
-        const expectedErrorMessage = `the template "nonexsistant" is not defined in the templates dir`;
+        const expectedErrorMessage = `the template "nonexistent" is not defined in the templates dir`;
         let actualErrorMessage;
         try {
-          await instance.create({ template: "nonexsistant", name });
+          await instance.create({ template: "nonexistent", name });
         } catch (e) {
           actualErrorMessage = e.message;
         }

@@ -52,7 +52,7 @@ function creditor(given = {}) {
   }
   async function aggregate({ template }) {
     if (!template) {
-      throw new Error("a template name was not specificed");
+      throw new Error("a template name was not specified");
     }
     if (!options.aggregators[template]) {
       throw new Error(
@@ -79,7 +79,7 @@ function creditor(given = {}) {
       );
     }
     if (!name) {
-      throw new Error("the location was not specificed");
+      throw new Error("the location was not specified");
     }
     if (options.package.uses[`${template}/${name}`]) {
       throw new Error(
@@ -107,7 +107,7 @@ function creditor(given = {}) {
   }
   async function move({ template, name, name_to }) {
     if (!template) {
-      throw new Error("a template name was not specificed");
+      throw new Error("a template name was not specified");
     }
     if (!options.templates[template]) {
       throw new Error(
@@ -115,10 +115,10 @@ function creditor(given = {}) {
       );
     }
     if (!name) {
-      throw new Error("the source location was not specificed");
+      throw new Error("the source location was not specified");
     }
     if (!name_to) {
-      throw new Error("the destination location was not sepcified");
+      throw new Error("the destination location was not specified");
     }
     const { files, templates } = await actions_move(options, {
       template,

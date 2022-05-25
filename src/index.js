@@ -23,7 +23,7 @@ const defaults = {
 function creditor(given = {}) {
   const options = { ...defaults };
 
-  // apply overrieds
+  // apply overrides
   options.path_base = given.path_base || options.path_base;
   options.rel_src = given.rel_src || options.rel_src;
   options.rel_templates = given.rel_templates || options.rel_templates;

@@ -6,6 +6,7 @@ const package = require("./package.json");
 const creditor = require("./src");
 const utils_prompt = require("./src/utils/prompt");
 const path = require("path");
+const lodash = require("lodash")
 
 const program = new Command();
 
@@ -240,7 +241,9 @@ function _prompts() {
             return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
           if (input === path.sep)
             return `You may not not move the root ${path.sep + answers.template} directory`;
-          if (!analysis.package.uses[path.normalize(answers.template + path.sep + input)])
+          //check if directory exists
+          const match = lodash.findKey(analysis.package.usesObj[answers.template], input.split(path.sep).at(-1))          
+          if (typeof match === 'undefined')
             return `${path.normalize(input)} is not an existing directory`;
           return true;
         },

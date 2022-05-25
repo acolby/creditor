@@ -3,8 +3,6 @@
 /**
  * `autocomplete` type prompt
  */
- var os = require('os')
- const eol = (os.EOL)
 
 var ansiEscapes = require("ansi-escapes");
 var chalk = require("chalk");
@@ -103,7 +101,7 @@ class AutocompletePrompt extends Base {
           return false;
         }
         const name = choice.name;
-        realIndexPosition += name ? name.split(eol).length : 0;
+        realIndexPosition += name ? name.split("\n").length : 0;
         return true;
       });
       bottomContent += this.paginator.paginate(
@@ -118,7 +116,7 @@ class AutocompletePrompt extends Base {
     }
 
     if (error) {
-      bottomContent += eol + chalk.red(">> ") + error;
+      bottomContent += "\n" + chalk.red(">> ") + error;
     }
 
     this.firstRender = false;
@@ -309,7 +307,7 @@ function listRender(choices, pointer /*: string */) /*: string */ {
   choices.forEach(function (choice, i) {
     if (choice.type === "separator") {
       separatorOffset++;
-      output += "  " + choice + eol;
+      output += "  " + choice + "\n";
       return;
     }
 
@@ -320,7 +318,7 @@ function listRender(choices, pointer /*: string */) /*: string */ {
         " (" +
         (typeof choice.disabled === "string" ? choice.disabled : "Disabled") +
         ")";
-      output += eol;
+      output += "\n";
       return;
     }
 
@@ -330,9 +328,9 @@ function listRender(choices, pointer /*: string */) /*: string */ {
     if (isSelected) {
       line = chalk.cyan(line);
     }
-    output += line + eol;
+    output += line + " \n";
   });
-  eolRegex = new RegExp(eol, 'g') //need to match last
+
   return output.replace(/\n$/, "");
 }
 

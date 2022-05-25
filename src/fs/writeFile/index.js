@@ -2,6 +2,7 @@ const path = require("path");
 const fs = require("fs");
 
 async function fs_writeFile(dir_path, contents) {
+  dir_path = path.normalize(dir_path);
   const dirPart = dir_path.split(path.sep).slice(0, -1).join(path.sep);
 
   // make the dir

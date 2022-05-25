@@ -1,20 +1,17 @@
 const expect = require("chai").expect;
 const mod = require("./");
-const path = require('path')
-;
-
 
 describe("utils_parsePatternUsage", () => {
   it("should parse a wide variety of strings", () => {
     const expected = {
-      "export const dodos_main_item()": [path.normalize("dodos/main/item")],
-      'import {dodos_user} from "#src/dodos/user"': [path.normalize("dodos/user")],
-      'await dodos_user.actions.fetch("userId");': [path.normalize("dodos/user")],
+      "export const dodos_main_item()": ["dodos/main/item"],
+      'import {dodos_user} from "#src/dodos/user"': ["dodos/user"],
+      'await dodos_user.actions.fetch("userId");': ["dodos/user"],
       "const user = useSelector((select) => select.dodos_user);": [
-        path.normalize("dodos/user"),
+        "dodos/user",
       ],
-      'from "#src/dodos/user"': [path.normalize("dodos/user")],
-      "export { selector () => dodos_user, other: true };": [path.normalize("dodos/user")],
+      'from "#src/dodos/user"': ["dodos/user"],
+      "export { selector () => dodos_user, other: true };": ["dodos/user"],
     };
 
     Object.entries(expected).forEach(([given, output]) => {
@@ -26,12 +23,12 @@ describe("utils_parsePatternUsage", () => {
   it("should return multiple matches", () => {
     const expected = {
       'import {dodos_user} from "#src/dodos/user"': [
-        path.normalize("dodos/user"),
-        path.normalize("dodos/user"),
+        "dodos/user",
+        "dodos/user",
       ],
       'import {dodos_user} from "#src/dingos/user/access"': [
-        path.normalize("dodos/user"),
-        path.normalize("dingos/user/access"),
+        "dodos/user",
+        "dingos/user/access",
       ],
     };
 
@@ -45,11 +42,11 @@ describe("utils_parsePatternUsage", () => {
   it("should properly remove files if the delimiter is /", () => {
     const expected = {
       'import {dodos_user} from "#src/dodos/user/index.js"': [
-        path.normalize("dodos/user"),
-        path.normalize("dodos/user"),
+        "dodos/user",
+        "dodos/user",
       ],
-      'const dingos_user_access = require("#src/dingos/user/access/index.js")':
-        [path.normalize("dingos/user/access"), path.normalize("dingos/user/access")],
+      'const dingos_user_access = requrie("#src/dingos/user/access/index.js")':
+        ["dingos/user/access", "dingos/user/access"],
     };
 
     Object.entries(expected).forEach(([given, output]) => {
@@ -59,22 +56,22 @@ describe("utils_parsePatternUsage", () => {
     });
   });
 
-  it("should provide additional information if verbose is set to true", () => {
+  it("should provide attional information if verbose is set to true", () => {
     const expected = {
       'import {dodos_user} from "#src/dodos/user/index.js"': [
-        { usage: path.normalize("dodos/user"), col_start: 8, col_end: 18, delimiter: "_" },
-        { usage: path.normalize("dodos/user"), col_start: 31, col_end: 41, delimiter: "/" },
+        { usage: "dodos/user", col_start: 8, col_end: 18, delimiter: "_" },
+        { usage: "dodos/user", col_start: 31, col_end: 41, delimiter: "/" },
       ],
-      'const dingos_user_access = require("#src/dingos/user/access/index.js")':
+      'const dingos_user_access = requrie("#src/dingos/user/access/index.js")':
         [
           {
-            usage: path.normalize("dingos/user/access"),
+            usage: "dingos/user/access",
             col_start: 6,
             col_end: 24,
             delimiter: "_",
           },
           {
-            usage: path.normalize("dingos/user/access"),
+            usage: "dingos/user/access",
             col_start: 41,
             col_end: 59,
             delimiter: "/",
@@ -84,10 +81,8 @@ describe("utils_parsePatternUsage", () => {
 
     Object.entries(expected).forEach(([given, output]) => {
       const res = mod({ templates: { dodos: {}, dingos: {} } }, given, true);
-      // expect(JSON.stringify(res[0])).to.equal(JSON.stringify(output[0]));
-      // expect(JSON.stringify(res[1])).to.equal(JSON.stringify(output[1]));
-      expect(res[0]).to.deep.equal(output[0]);
-      expect(res[1]).to.deep.equal(output[1]);
+      expect(JSON.stringify(res[0])).to.equal(JSON.stringify(output[0]));
+      expect(JSON.stringify(res[1])).to.equal(JSON.stringify(output[1]));
     });
   });
 });

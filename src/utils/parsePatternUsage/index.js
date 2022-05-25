@@ -1,7 +1,3 @@
-const path = require("path");
-var os = require('os')
-const eol = (os.EOL)
-
 function utils_parsePatternUsage(
   { templates },
   string,
@@ -15,7 +11,7 @@ function utils_parsePatternUsage(
     ".": true,
     "-": true,
   };
-  
+
   const terminators = {
     "(": true,
     ")": true,
@@ -24,7 +20,7 @@ function utils_parsePatternUsage(
     '"': true,
     "`": true,
     "\t": true,
-    [eol]: true,  //does this need to be eol terminator?
+    "\n": true,
     "{": true,
     "}": true,
     "\r": true,
@@ -60,13 +56,13 @@ function utils_parsePatternUsage(
 
       if (verbose) {
         matches.push({
-          usage: items.join(path.sep),
+          usage: items.join("/"),
           col_start: col_start + col_offset,
           col_end: col_end + col_offset,
           delimiter,
         });
       } else {
-        matches.push(items.join(path.sep));
+        matches.push(items.join("/"));
       }
 
       if (!!string[col_end]) {

@@ -1,7 +1,3 @@
-const path = require("path");
-var os = require('os')
-const eol = (os.EOL)
-
 const delimiters = {
   CREDITOR_UNDERSCORE_NAME: "_",
   CREDITOR_PERIOD_NAME: ".",
@@ -11,21 +7,18 @@ const delimiters = {
 
 function utils_renderTemplate(template, usage) {
   return template
-    .split(eol)
+    .split("\n")
     .map((line) => {
       let rendered = line;
-      //does the line contain a delimeter?
       while (rendered.indexOf("CREDITOR_") > 0) {
         const delimitorKey = Object.keys(delimiters).find((delimitorKey) => {
           return rendered.indexOf(delimitorKey) > -1;
         });
-        //If yes, replace the path seperator ('/', or '\\') with the delimiter
         if (delimitorKey) {
           const delimitor = delimiters[delimitorKey];
-
           rendered = rendered.replace(
             delimitorKey,
-            usage.split(path.sep).join(delimitor)
+            usage.replace(/\//g, delimitor)
           );
         } else {
           // console.log('warning: line', line, 'does not porperly use CREDITOR_');
@@ -34,7 +27,7 @@ function utils_renderTemplate(template, usage) {
       }
       return rendered;
     })
-    .join(eol);
+    .join("\n");
 }
 
 module.exports = utils_renderTemplate;

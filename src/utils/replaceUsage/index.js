@@ -1,11 +1,8 @@
 const parsePatternUsage = require("#src/utils/parsePatternUsage/index.js");
-const path = require('path');
-var os = require('os');
-const eol = (os.EOL);
 
 function utils_replaceUsage({ templates }, given, usageReplaceMap) {
   return given
-    .split(eol)
+    .split("\n")
     .map((line) => {
       const verboseUsages = parsePatternUsage({ templates }, line, true).sort(
         (itemA, itemB) => itemB.col_start - itemA.col_start
@@ -14,7 +11,7 @@ function utils_replaceUsage({ templates }, given, usageReplaceMap) {
       verboseUsages.forEach((verboseUsage) => {
         if (usageReplaceMap[verboseUsage.usage]) {
           const delimited = usageReplaceMap[verboseUsage.usage]
-            .split(path.sep)
+            .split("/")
             .join(verboseUsage.delimiter);
           line = `${line.slice(
             0,
@@ -25,7 +22,7 @@ function utils_replaceUsage({ templates }, given, usageReplaceMap) {
 
       return line;
     })
-    .join(eol);
+    .join("\n");
 }
 
 module.exports = utils_replaceUsage;

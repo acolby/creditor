@@ -1,8 +1,5 @@
 const expect = require("chai").expect;
 const mod = require("./");
-const path = require('path')
-;
-
 
 describe("utils_renderTemplate", () => {
   let template;
@@ -13,7 +10,7 @@ describe("utils_renderTemplate", () => {
       import item from './';
       export const CREDITOR_UNDERSCORE_NAME = item;
     `;
-    usage = path.normalize("stores/my/name");
+    usage = "stores/my/name";
   });
 
   it("should properly render CREDITOR_UNDERSCORE_NAME", () => {

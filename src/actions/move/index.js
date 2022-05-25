@@ -1,6 +1,5 @@
 const utils_replaceUsage = require("#src/utils/replaceUsage/index.js");
 const fs_readFile = require("#src/fs/readFile/index.js");
-const path = require("path");
 
 async function actions_move(
   { package, path_src, path_templates, templates },
@@ -8,8 +7,8 @@ async function actions_move(
 ) {
   const files = { toCreate: {}, toUpdate: {}, toDelete: {} };
   const templatesToUpdate = { toUpdate: {} };
-  const usage_from = template + path.sep + name; //If templates takes a path rather than folder
-  const usage_to = template + path.sep + name_to;//must wrap template in pathNormalization
+  const usage_from = `${template}/${name}`;
+  const usage_to = `${template}/${name_to}`;
 
   // 1.) find all usages that match the
   const usagesToReplaceMap = {};
@@ -18,27 +17,24 @@ async function actions_move(
       usagesToReplaceMap[usage] = `${usage_to}${usage.split(usage_from)[1]}`;
     }
   });
-  // console.log("🚀 ~ file: index.js ~ line 19 ~ Object.keys ~ usagesToReplaceMap", usagesToReplaceMap)
 
-  // 2.) find all relevant locations that require updating
+  // 2.) find all relivant locations that require updating
   await Promise.all(
     Object.keys(usagesToReplaceMap).map(async (usage) => {
       // 2.a create the desired files and delete the old ones
       await Promise.all(
         Object.keys(package.usesInFiles[usage] || {}).map(async (fileName) => {
           const contents = await fs_readFile(
-            path_src + path.sep + usage + path.sep + fileName
+            `${path_src}/${usage}/${fileName}`
           );
-          files.toCreate[usagesToReplaceMap[usage] + path.sep + fileName] =
+          files.toCreate[`${usagesToReplaceMap[usage]}/${fileName}`] =
             utils_replaceUsage({ templates }, contents, usagesToReplaceMap);
-          files.toDelete[usage + path.sep + fileName ] = true;
+          files.toDelete[`${usage}/${fileName}`] = true;
         })
       );
-      // console.log("🚀 ~ file: index.js ~ line 35 ~ Object.keys ~ files", files)
 
       // 2.b update all other files that are using the pattern
       const usedBy = package.usedBy[usage];
-      // console.log("🚀 ~ file: index.js ~ line 41 ~ Object.keys ~ usedBy", usedBy)
       if (usedBy) {
         await Promise.all(
           Object.keys(usedBy).map(async (usedByUsage) => {
@@ -49,9 +45,9 @@ async function actions_move(
                   if (!package.usesInFiles[usedByUsage][fileName][usage])
                     return;
                   const contents = await fs_readFile(
-                    path_src + path.sep + usedByUsage + path.sep + fileName 
+                    `${path_src}/${usedByUsage}/${fileName}`
                   );
-                  files.toUpdate[usedByUsage + path.sep + fileName] =
+                  files.toUpdate[`${usedByUsage}/${fileName}`] =
                     utils_replaceUsage(
                       { templates },
                       contents,
@@ -60,7 +56,6 @@ async function actions_move(
                 }
               )
             );
-            // console.log("🚀 ~ file: index.js ~ line 55 ~ files", files)
           })
         );
       }
@@ -69,9 +64,9 @@ async function actions_move(
 
   // 3. find template files that need to be updated
   const templateFiles = [];
-  Object.entries(templates).forEach(([template, templateDefinition]) => {
+  Object.entries(templates).forEach(([tempalte, templateDefinition]) => {
     templateDefinition.files.forEach((fileName) => {
-      templateFiles.push(path_templates + path.sep + template + path.sep + fileName);
+      templateFiles.push(`${path_templates}/${tempalte}/${fileName}`);
     });
   });
 
@@ -84,7 +79,7 @@ async function actions_move(
         usagesToReplaceMap
       );
       if (contents !== newContents) {
-        templatesToUpdate.toUpdate[filePath.split(path_templates + path.sep)[1]] =
+        templatesToUpdate.toUpdate[filePath.split(`${path_templates}/`)[1]] =
           newContents;
       }
     })

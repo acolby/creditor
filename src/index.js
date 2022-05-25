@@ -1,5 +1,5 @@
-
 const path = require("path");
+const slash = require('slash')
 
 const utils_loadTemplates = require("#src/utils/loadTemplates/index.js");
 const utils_loadAggregators = require("#src/utils/loadAggregators/index.js");
@@ -12,18 +12,18 @@ const actions_aggregate = require("#src/actions/aggregate/index.js");
 const fs_commitFileObject = require("#src/fs/commitFileObject/index.js");
 
 const defaults = {
-  path_base: process.cwd(), // location of package json
+  path_base: slash(process.cwd()), // location of pactage json
 
   // OPTIONAL
-  rel_templates: path.normalize("/creditor/templates"), // default
-  rel_aggregators: path.normalize("/creditor/aggregators"), // default
-  rel_src: path.normalize("/src"),
+  rel_templates: "/creditor/templates", // default
+  rel_aggregators: "/creditor/aggregators", // default
+  rel_src: "/src",
 };
 
 function creditor(given = {}) {
   const options = { ...defaults };
 
-  // apply overrides
+  // apply overrieds
   options.path_base = given.path_base || options.path_base;
   options.rel_src = given.rel_src || options.rel_src;
   options.rel_templates = given.rel_templates || options.rel_templates;
@@ -34,15 +34,15 @@ function creditor(given = {}) {
 
   async function init() {
     // load templates
-    options.path_src = path.join(options.path_base, options.rel_src);
-    options.path_templates = path.join(
+    options.path_src = slash(path.join(options.path_base, options.rel_src));
+    options.path_templates = slash(path.join(
       options.path_base,
       options.rel_templates
-    );
-    options.path_aggregators = path.join(
+    ));
+    options.path_aggregators = slash(path.join(
       options.path_base,
       options.rel_aggregators
-    );
+    ));
     options.templates = utils_loadTemplates(options);
     options.aggregators = utils_loadAggregators(options);
     options.package = await utils_analyzeSrc(options);
@@ -52,7 +52,7 @@ function creditor(given = {}) {
   }
   async function aggregate({ template }) {
     if (!template) {
-      throw new Error("a template name was not specified");
+      throw new Error("a template name was not specificed");
     }
     if (!options.aggregators[template]) {
       throw new Error(
@@ -71,7 +71,7 @@ function creditor(given = {}) {
   }
   async function create({ template, name }) {
     if (!template) {
-      throw new Error("a template name was not specified");
+      throw new Error("a template name was not specificed");
     }
     if (!options.templates[template]) {
       throw new Error(
@@ -79,9 +79,9 @@ function creditor(given = {}) {
       );
     }
     if (!name) {
-      throw new Error("the location was not specified");
+      throw new Error("the location was not specificed");
     }
-    if (options.package.uses[path.normalize(`${template}/${name}`)]) {
+    if (options.package.uses[`${template}/${name}`]) {
       throw new Error(
         `the item (${template}/${name}) you are trying to render already exists `
       );
@@ -107,7 +107,7 @@ function creditor(given = {}) {
   }
   async function move({ template, name, name_to }) {
     if (!template) {
-      throw new Error("a template name was not specified");
+      throw new Error("a template name was not specificed");
     }
     if (!options.templates[template]) {
       throw new Error(
@@ -115,10 +115,10 @@ function creditor(given = {}) {
       );
     }
     if (!name) {
-      throw new Error("the source location r not specified");
+      throw new Error("the source location was not specificed");
     }
     if (!name_to) {
-      throw new Error("the destination location was not specified");
+      throw new Error("the destination location was not sepcified");
     }
     const { files, templates } = await actions_move(options, {
       template,
@@ -128,9 +128,9 @@ function creditor(given = {}) {
 
     // check if any of the files being created already correspond to an existing file pattern
     Object.keys(files.toCreate || {}).forEach((filePath) => {
-      const usage = filePath.split(path.sep).slice(0, -1).join(path.sep);
+      const usage = filePath.split("/").slice(0, -1).join("/");
       if (options.package.uses[usage]) {
-        throw new Error(`creating ${filePath} results in a collision`); //needs to be fixed to remove unnecessary collisions
+        throw new Error(`creating ${filePath} results in a collision`);
       }
     });
     await fs_commitFileObject({

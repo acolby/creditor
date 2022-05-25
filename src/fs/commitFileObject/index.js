@@ -41,34 +41,33 @@ async function fs_commitFileObject({
 
   return Promise.all(
     (toWrite || []).map((toWrite) => {
-      toWrite.path = path.normalize(toWrite.path)
       if (toWrite.action === "create") {
         if (verbose)
           console.log(
-            (`${chalk.green("CREATE")} ${rel_base}${(rel_base && path.sep) || ""}${
-              toWrite.path
-            }`)
-          );
-        return fs_writeFile(path_base + path.sep + toWrite.path, toWrite.contents); }
-      if (toWrite.action === "update") {
-        if (verbose)
-          console.log(
-            `${chalk.yellow("UPDATE")} ${rel_base}${(rel_base && path.sep) || ""}${
+            `${chalk.green("CREATE")} ${rel_base}${(rel_base && "/") || ""}${
               toWrite.path
             }`
           );
-
-        return fs_writeFile(path_base + path.sep + toWrite.path, toWrite.contents);
+        return fs_writeFile(`${path_base}/${toWrite.path}`, toWrite.contents);
+      }
+      if (toWrite.action === "update") {
+        if (verbose)
+          console.log(
+            `${chalk.yellow("UPDATE")} ${rel_base}${(rel_base && "/") || ""}${
+              toWrite.path
+            }`
+          );
+        return fs_writeFile(`${path_base}/${toWrite.path}`, toWrite.contents);
       }
       if (toWrite.action === "delete") {
         if (verbose)
           console.log(
-            `${chalk.red("DELETE")} ${rel_base}${(rel_base && path.sep) || ""}${
+            `${chalk.red("DELETE")} ${rel_base}${(rel_base && "/") || ""}${
               toWrite.path
             }`
           );
         return fs_removeRecursive(
-          (path_base + path.sep + toWrite.path).split(path.sep).slice(0, -1).join(path.sep)
+          `${path_base}/${toWrite.path}`.split("/").slice(0, -1).join("/")
         );
       }
     })

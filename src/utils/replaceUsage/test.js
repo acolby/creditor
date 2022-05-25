@@ -1,11 +1,8 @@
 const expect = require("chai").expect;
-const path = require('path')
-;
-
 const mod = require("./");
 
 describe("utils_replaceUsage", () => {
-  it("should properly replace an entire rendered template with file with the items given in the map", () => {
+  it("should properlty replace an entire rendered template with file with the items given in the map", () => {
     const given = `
       import {stores_user} from '#src/stores/user/index.js';
       import {stores_user_access} from '#src/stores/user/access/index.js';
@@ -17,13 +14,10 @@ describe("utils_replaceUsage", () => {
 
       exports comps_user_login;
     `;
-    userFrom = path.normalize("stores/user");
-    userTo = path.normalize("stores/profile");
-    userF = path.normalize("stores/user/access");
-    userT = path.normalize("stores/profile/access");
+
     const replaceMap = {
-      [userFrom] : userTo,
-      [userF]: userT
+      "stores/user": "stores/profile",
+      "stores/user/access": "stores/profile/access",
     };
 
     const expected = `

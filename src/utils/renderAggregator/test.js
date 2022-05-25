@@ -1,16 +1,14 @@
 const expect = require("chai").expect;
 const mod = require("./");
-const path = require('path')
-;
 
 describe("utils_renderAggregator", () => {
   let template;
-  const myTestPath = path.normalize("stores/my/name")
+
   beforeEach(() => {
     aggregator = (package, helpers) => {
       return `rendered`;
     };
-    uses = { myTestPath  : true };
+    uses = { "stores/my/name": true };
   });
 
   it("should properly render the given aggregator", () => {

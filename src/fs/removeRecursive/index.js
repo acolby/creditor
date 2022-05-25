@@ -1,18 +1,16 @@
 const fs = require("fs");
-const path = require('path')
 
-async function fs_removeRecursive(dirPath) {
-  let children = fs.readdirSync(dirPath) || [];
+async function fs_removeRecursive(path) {
+  let children = fs.readdirSync(path) || [];
   children = await Promise.all(
     children.map(async (child) => {
-
       if (
-        fs.statSync((dirPath + path.sep + child).replace(/\/{2,}/g, path.sep)).isDirectory()
+        fs.statSync(`${path}/${child}`.replace(/\/{2,}/g, "/")).isDirectory()
       ) {
-        fs_removeRecursive((dirPath + path.sep + child).replace(/\/{2,}/g, path.sep));
+        fs_removeRecursive(`${path}/${child}`.replace(/\/{2,}/g, "/"));
         return false;
       }
-      fs.unlink((dirPath + path.sep + child).replace(/\/{2,}/g, path.sep), () => {});
+      fs.unlink(`${path}/${child}`.replace(/\/{2,}/g, "/"), () => {});
       return false;
     })
   );
@@ -21,7 +19,7 @@ async function fs_removeRecursive(dirPath) {
 
   if (!children.length) {
     await new Promise((resolve) =>
-      fs.rmdir(`${dirPath}`.replace(/\/{2,}/g, path.sep), resolve)
+      fs.rmdir(`${path}`.replace(/\/{2,}/g, "/"), resolve)
     );
   }
 }

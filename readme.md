@@ -70,7 +70,7 @@ function CREDITOR_UNDERSCORE_NAME(props) {
 export default CREDITOR_UNDERSCORE_NAME;
 ```
 
-Now, runing creditor will allow you to create a 'comps' item, where the location of the item will determine what gets swapped out with the Creditor Keyword (CREDITOR_UNDERSOCRE_NAME).
+Now, running creditor will allow you to create a 'comps' item, where the location of the item will determine what gets swapped out with the Creditor Keyword (CREDITOR_UNDERSOCRE_NAME).
 
 It is import to understand that a creditor template directory is allowed to contain multiple files. All of the tiles will be created in the output directory when running creditor. This allows you to scaffold any sort of File Pattern you wish.
 
@@ -89,20 +89,20 @@ For example you may scaffold a 'comps' with the interface file (index.js) a test
 
 The following keywords within your template files will be swapped out with the created template.
 
-- CREDITOR_UNDERSCORE_NAME -> name of component deliniated by '\*'
-- CREDITOR_PERIOD_NAME -> name of component deliniated by '.'
-- CREDITOR_DASH_NAME -> name of component deliniated by '-'
-- CREDITOR_SLASH_NAME -> name of component deliniated by '/'
+- CREDITOR_UNDERSCORE_NAME -> name of component delineated by '\*'
+- CREDITOR_PERIOD_NAME -> name of component delineated by '.'
+- CREDITOR_DASH_NAME -> name of component delineated by '-'
+- CREDITOR_SLASH_NAME -> name of component delineated by '/'
 
 ## Defining Aggregators
 
-It is often desired to take files witin a given directory and aggregate them within a top level file of that directory. Examples of this are:
+It is often desired to take files within a given directory and aggregate them within a top level file of that directory. Examples of this are:
 
 - Creating an interface file
-- Combining subfiles to create a store
+- Combining sub files to create a store
 - Merging files for documentation purposes
 
-Creditor provides a mechinisem for defining how items witin a directory should be merged programatically. This allows deveoplers to focus on developing the items rather then updating the proper boilerplate agregator files.
+Creditor provides a mechanism for defining how items within a directory should be merged programmatically. This allows developers to focus on developing the items rather then updating the proper boilerplate aggregator files.
 
 Similarly to templates, aggregators are defined within the creditor directory
 
@@ -137,7 +137,7 @@ module.exports = ({ paths = [] }) => {
 };
 ```
 
-The above example takes the directory and exports all items that are defined at the second layer of the file. This is to create an interface file for other directorys or for perhaps a library interface.
+The above example takes the directory and exports all items that are defined at the second layer of the file. This is to create an interface file for other directories or for perhaps a library interface.
 
 ```js
 export { routes_login } from "#src/routes/login";

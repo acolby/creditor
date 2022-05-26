@@ -12,7 +12,7 @@ const program = new Command();
 
 program
   .name("creditor")
-  .description("CLI for scafolding code")
+  .description("CLI for scaffolding code")
   .version(package.version);
 
 program

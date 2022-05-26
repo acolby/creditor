@@ -16,7 +16,7 @@ Creditor expects there to be a ./creditor directory in the given project. This d
 
 ### ./creditor structure
 
-The "/creditor" directory needs to be sturctured as follows
+The "/creditor" directory needs to be structured as follows
 
 ```
   /_ package.json
@@ -70,7 +70,7 @@ function CREDITOR_UNDERSCORE_NAME(props) {
 export default CREDITOR_UNDERSCORE_NAME;
 ```
 
-Now, running creditor will allow you to create a 'comps' item, where the location of the item will determine what gets swapped out with the Creditor Keyword (CREDITOR_UNDERSOCRE_NAME).
+Now, running creditor will allow you to create a 'comps' item, where the location of the item will determine what gets swapped out with the Creditor Keyword (CREDITOR_UNDERSCORE_NAME).
 
 It is import to understand that a creditor template directory is allowed to contain multiple files. All of the tiles will be created in the output directory when running creditor. This allows you to scaffold any sort of File Pattern you wish.
 

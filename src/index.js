@@ -12,7 +12,7 @@ const actions_aggregate = require("#src/actions/aggregate/index.js");
 const fs_commitFileObject = require("#src/fs/commitFileObject/index.js");
 
 const defaults = {
-  path_base: slash(process.cwd()), // location of pactage json
+  path_base: slash(process.cwd()), // location of package json
 
   // OPTIONAL
   rel_templates: "/creditor/templates", // default
@@ -23,7 +23,7 @@ const defaults = {
 function creditor(given = {}) {
   const options = { ...defaults };
 
-  // apply overrieds
+  // apply overrides
   options.path_base = given.path_base || options.path_base;
   options.rel_src = given.rel_src || options.rel_src;
   options.rel_templates = given.rel_templates || options.rel_templates;

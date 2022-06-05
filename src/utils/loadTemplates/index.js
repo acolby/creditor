@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const slash = require('slash')
+const utils_slash = require("#src/utils/slash/index.js");
 
 
 function utils_loadTemplates({ path_templates }) {
@@ -14,7 +14,7 @@ function utils_loadTemplates({ path_templates }) {
   return templateNames.reduce((acc, name) => {
     acc[name] = {
       name: name,
-      path: slash(path.join(path_templates, name)),
+      path: utils_slash(path.join(path_templates, name)),
       files: fs.readdirSync(path.join(path_templates, name)),
     };
     return acc;

@@ -1,5 +1,5 @@
 const path = require("path");
-const slash = require('slash')
+const utils_slash = require("#src/utils/slash/index.js");
 
 const utils_loadTemplates = require("#src/utils/loadTemplates/index.js");
 const utils_loadAggregators = require("#src/utils/loadAggregators/index.js");
@@ -12,7 +12,7 @@ const actions_aggregate = require("#src/actions/aggregate/index.js");
 const fs_commitFileObject = require("#src/fs/commitFileObject/index.js");
 
 const defaults = {
-  path_base: slash(process.cwd()), // location of package json
+  path_base: utils_slash(process.cwd()), // location of package json
 
   // OPTIONAL
   rel_templates: "/creditor/templates", // default
@@ -34,12 +34,12 @@ function creditor(given = {}) {
 
   async function init() {
     // load templates
-    options.path_src = slash(path.join(options.path_base, options.rel_src));
-    options.path_templates = slash(path.join(
+    options.path_src = utils_slash(path.join(options.path_base, options.rel_src));
+    options.path_templates = utils_slash(path.join(
       options.path_base,
       options.rel_templates
     ));
-    options.path_aggregators = slash(path.join(
+    options.path_aggregators = utils_slash(path.join(
       options.path_base,
       options.rel_aggregators
     ));

@@ -3,7 +3,7 @@ const path = require("path");
 const fs = require("fs");
 const readdirp = promisify(fs.readdir);
 const statp = promisify(fs.stat);
-const slash = require('slash')
+const utils_slash = require("#src/utils/slash/index.js");
 
 
 async function fs_directoryTree(directoryName, results = []) {
@@ -20,7 +20,7 @@ async function fs_directoryTree(directoryName, results = []) {
     if (stat.isDirectory()) {
       await fs_directoryTree(fullPath, results);
     } else {
-      results.push(slash(fullPath));
+      results.push(utils_slash(fullPath));
     }
   }
   return results;

@@ -121,7 +121,7 @@ When creditor runs and if the comps directory is changed in any way. A correspon
 var os = require('os')
 const eol = (os.EOL)
 const path = require('path')
-const slash = require('slash')
+const utils_slash = require("#src/utils/slash/index.js");
 module.exports = ({ paths = [] }) => {
 
   const filtered = paths
@@ -130,7 +130,7 @@ module.exports = ({ paths = [] }) => {
   
   const _exports = filtered
     .map(item => {
-      const importPath = slash(`#src/${item}`);
+      const importPath = utils_slash(`#src/${item}`);
       return `export { ${item.split(path.sep).join('_')} } from '${importPath}';`});  //incorporate path.sep
 
   return ['', ..._exports, ''].join(eol);

@@ -1,4 +1,5 @@
 const path = require("path");
+const utils_slash = require("#src/utils/slash/index.js");
 
 const utils_loadTemplates = require("#src/utils/loadTemplates/index.js");
 const utils_loadAggregators = require("#src/utils/loadAggregators/index.js");
@@ -11,7 +12,7 @@ const actions_aggregate = require("#src/actions/aggregate/index.js");
 const fs_commitFileObject = require("#src/fs/commitFileObject/index.js");
 
 const defaults = {
-  path_base: process.cwd(), // location of pactage json
+  path_base: utils_slash(process.cwd()), // location of package json
 
   // OPTIONAL
   rel_templates: "/creditor/templates", // default
@@ -22,7 +23,7 @@ const defaults = {
 function creditor(given = {}) {
   const options = { ...defaults };
 
-  // apply overrieds
+  // apply overrides
   options.path_base = given.path_base || options.path_base;
   options.rel_src = given.rel_src || options.rel_src;
   options.rel_templates = given.rel_templates || options.rel_templates;
@@ -33,15 +34,15 @@ function creditor(given = {}) {
 
   async function init() {
     // load templates
-    options.path_src = path.join(options.path_base, options.rel_src);
-    options.path_templates = path.join(
+    options.path_src = utils_slash(path.join(options.path_base, options.rel_src));
+    options.path_templates = utils_slash(path.join(
       options.path_base,
       options.rel_templates
-    );
-    options.path_aggregators = path.join(
+    ));
+    options.path_aggregators = utils_slash(path.join(
       options.path_base,
       options.rel_aggregators
-    );
+    ));
     options.templates = utils_loadTemplates(options);
     options.aggregators = utils_loadAggregators(options);
     options.package = await utils_analyzeSrc(options);
@@ -51,7 +52,7 @@ function creditor(given = {}) {
   }
   async function aggregate({ template }) {
     if (!template) {
-      throw new Error("a template name was not specificed");
+      throw new Error("a template name was not specified");
     }
     if (!options.aggregators[template]) {
       throw new Error(
@@ -78,7 +79,7 @@ function creditor(given = {}) {
       );
     }
     if (!name) {
-      throw new Error("the location was not specificed");
+      throw new Error("the location was not specified");
     }
     if (options.package.uses[`${template}/${name}`]) {
       throw new Error(
@@ -106,7 +107,7 @@ function creditor(given = {}) {
   }
   async function move({ template, name, name_to }) {
     if (!template) {
-      throw new Error("a template name was not specificed");
+      throw new Error("a template name was not specified");
     }
     if (!options.templates[template]) {
       throw new Error(
@@ -114,10 +115,10 @@ function creditor(given = {}) {
       );
     }
     if (!name) {
-      throw new Error("the source location was not specificed");
+      throw new Error("the source location was not specified");
     }
     if (!name_to) {
-      throw new Error("the destination location was not sepcified");
+      throw new Error("the destination location was not specified");
     }
     const { files, templates } = await actions_move(options, {
       template,

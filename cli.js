@@ -5,50 +5,51 @@ const fuzzy = require("fuzzy-filter");
 const package = require("./package.json");
 const creditor = require("./src");
 const utils_prompt = require("./src/utils/prompt");
+const path = require("path");
 
 const program = new Command();
 
 program
   .name("creditor")
-  .description("CLI for scafolding code")
+  .description("CLI for scaffolding code")
   .version(package.version);
 
 program
   .command("inquire")
-  .description("Have the command prop walk you through the runnning creditor")
+  .description("Have the command prop walk you through the running creditor")
   .option("--src", 'location of of your source code (default: "/src")')
   .option("--verbose", "show additional information")
+  .option("--repeat", "relaunch Creditor after completion (for multiple operations)", false)
   .action(async (options) => {
-    const instance = creditor({
-      rel_src: options.src,
-      verbose: options.verbose,
-    });
-    await instance.init();
-    const prompts = _prompts();
-    const answers = {}; // where the answers will be stored
-    const analysis = {
-      templates: instance.options.templates,
-      package: instance.options.package,
-    };
-    await utils_prompt("action", { prompts, answers, analysis });
+    
+    const prompts = _prompts(); // where the answers will be stored
+    const answers = {};
+    answers["repeat"] = options.repeat;   
 
-    if (answers.action === "create") {
-      await instance.create({
-        template: answers.template,
-        name: answers.mkLoc,
-      });
-    } else if (answers.action === "move") {
-      await instance.move({
-        template: answers.template,
-        name: answers.mvSrc,
-        name_to: answers.mvDest,
-      });
-    } else if (answers.action === "aggregate") {
-      await instance.aggregate({
-        template: answers.template,
-      });
-    }
-  });
+    do {
+      const credInfo = await initCred(options);
+      const instance = credInfo[0];
+      const analysis = credInfo[1];
+      await utils_prompt("action", { prompts, answers, analysis });
+      if (answers.action === "create") {
+        await instance.create({
+          template: answers.template,
+          name: answers.mkLoc,
+        });
+      } else if (answers.action === "move") {
+        await instance.move({
+          template: answers.template,
+          name: answers.mvSrc,
+          name_to: answers.mvDest,
+        });
+      } else if (answers.action === "aggregate") {
+        await instance.aggregate({
+          template: answers.template,
+        });
+      } 
+      if (answers.repeat) console.log("Action complete. Press CTRL + C to exit script")
+    }while (options.repeat);
+    });
 
 program
   .command("create <destination>")
@@ -66,12 +67,12 @@ program
     try {
       await instance.init();
       await instance.create({
-        template: location.split("/").filter((item) => item)[0],
+        template: location.split(path.sep).filter((item) => item)[0],
         name: location
-          .split("/")
+          .split(path.sep)
           .filter((item) => item)
           .slice(1)
-          .join("/"),
+          .join(path.sep),
       });
     } catch (e) {
       console.log("ERROR::", e.message, "--", e.stack.split("\n")[0]);
@@ -90,8 +91,8 @@ program
       rel_src: options.src,
       verbose: options.verbose,
     });
-    const template_source = source.split("/").filter((item) => item)[0];
-    const template_dest = dest.split("/").filter((item) => item)[0];
+    const template_source = source.split(path.sep).filter((item) => item)[0];
+    const template_dest = dest.split(path.sep).filter((item) => item)[0];
     if (template_source !== template_dest) {
       throw new Error(
         `the source template (${template_source}) is different than the destination template (${template_dest})`
@@ -102,15 +103,15 @@ program
       const files = await instance.move({
         template: template_source,
         name: source
-          .split("/")
+          .split(path.sep)
           .filter((item) => item)
           .slice(1)
-          .join("/"),
+          .join(path.sep),
         name_to: dest
-          .split("/")
+          .split(path.sep)
           .filter((item) => item)
           .slice(1)
-          .join("/"),
+          .join(path.sep),
       });
     } catch (e) {
       console.log("ERROR::", e.message, "--", e.stack.split("\n")[0]);
@@ -184,7 +185,7 @@ function _prompts() {
         type: "autocomplete",
         name: "mkLoc",
         suggestOnly: true,
-        message: `Where would you like to put the new "${answers.template}" within /${answers.template}/?`,
+        message: `Where would you like to put the new "${answers.template}" within ${path.sep + answers.template + path.sep}?`,
         source: async (_, input) => {
           return Promise.resolve(
             _fuzzySearchPath(input, answers.template, analysis)
@@ -192,23 +193,24 @@ function _prompts() {
         },
         validate: (input) => {
           if (!input) return "This question is required";
+          input = path.normalize(input);
           if (
             input !==
             `${input || ""}`
-              .replace(/[^a-zA-Z/]/g, "")
-              .replace(/\/{2,}/g, "/")
-              .split("/")
+              .replace(/[^(a-zA-Z)/|\\]/g, "")
+              .replace(/\/{2,}|\\{3,}/g, path.sep)
+              .split(path.sep)
               .filter((item) => item)
-              .join("/")
+              .join(path.sep)
           )
-            return `${input} is not a valid directory of form some/nested/directory`;
-          if (input === "/")
-            return `Template can not be created at the top of the /${answers.template} directory`;
-          if (analysis.package.uses[`${answers.template}/${input}`])
-            return `${input} already exists within /${answers.template}/`;
+            return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
+          if (input === path.sep)
+            return `Template can not be created at the top of the ${path.sep + answers.template} directory`;
+          if (analysis.package.uses[path.normalize(answers.template + path.sep + input)])
+            return `${path.normalize(input)} already exists within ${path.sep + answers.template + path.sep}`;
           return true;
         },
-        nextPrompt() {},
+        nextPrompt(){},
       };
     },
     mvSrc: (params) => {
@@ -225,20 +227,23 @@ function _prompts() {
         },
         validate: (input) => {
           if (!input) return "This question is required";
+          input = path.normalize(input);
           if (
             input !==
             `${input || ""}`
-              .replace(/[^a-zA-Z/]/g, "")
-              .replace(/\/{2,}/g, "/")
-              .split("/")
+              .replace(/[^(a-zA-Z)/|\\]/g, "")
+              .replace(/\/{2,}|\\{3,}/g, path.sep)
+              .split(path.sep)
               .filter((item) => item)
-              .join("/")
+              .join(path.sep)
           )
-            return `${input} is not a valid directory of form some/nested/directory`;
-          if (input === "/")
-            return `You may not not move the root /${answers.template} directory`;
-          if (!analysis.package.uses[`${answers.template}/${input}`])
-            return `${input} is not an existing directory`;
+            return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
+          if (input === path.sep)
+            return `You may not not move the root ${path.sep + answers.template} directory`;
+          //check if directory exists
+          const match = Object.keys(analysis.package.usesObj[answers.template]).find(key => key === input.split(path.sep).at(-1))          
+          if (typeof match === 'undefined')
+            return `${path.normalize(input)} is not an existing directory`;
           return true;
         },
         nextPrompt() {
@@ -263,13 +268,13 @@ function _prompts() {
           if (
             input !==
             `${input || ""}`
-              .replace(/[^a-zA-Z/]/g, "")
-              .replace(/\/{2,}/g, "/")
-              .split("/")
+              .replace(/[^(a-zA-Z)/|\\]/g, "")
+              .replace(/\/{2,}|\\{3,}/g, path.sep)
+              .split(path.sep)
               .filter((item) => item)
-              .join("/")
+              .join(path.sep)
           )
-            return `${input} is not a valid directory of form some/nested/directory`;
+            return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
           return true;
         },
         nextPrompt() {},
@@ -278,23 +283,38 @@ function _prompts() {
   };
 }
 
+async function initCred(options){
+    const instance = creditor({
+      rel_src: options.src,
+      verbose: options.verbose,
+    });
+    await instance.init();
+    const analysis = {
+      templates: instance.options.templates,
+      package: instance.options.package,
+    };
+    return [instance, analysis];
+}
+
+
 function _fuzzySearchPath(input, template, analysis) {
   const sanitized = `${input || ""}`
-    .replace(/[^a-zA-Z/]/g, "")
-    .replace(/\/{2,}/g, "/");
+    .replace(/[^(a-zA-Z)/|\\]/g, "")
+    .replace(/\/{2,}|\\{3,}/g, path.sep)
+;
 
   // default uses by is template
   let usesBy = analysis.package.usesObj[template] || {};
 
-  const segments = sanitized.split("/").slice(0, -1);
+  const segments = path.normalize(sanitized).split(path.sep).slice(0, -1);
   segments.forEach((item) => {
     usesBy = usesBy[item] || {};
   });
-  const prefix = segments.join("/");
+  const prefix = segments.join(path.sep);
   const suggestions = Object.keys(usesBy || {}).map(
-    (item) => `${prefix}${(prefix && "/") || ""}${item}/`
+    (item) => `${prefix}${(prefix && path.sep) || ""}${item + path.sep}`
   );
-  const results = fuzzy(sanitized, suggestions || []).sort((a, b) => {
+  const results = fuzzy(path.normalize(sanitized), suggestions || []).sort((a, b) => {
     return a.length - b.length;
   });
   return [sanitized, ...results];

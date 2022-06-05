@@ -1,5 +1,7 @@
 const expect = require("chai").expect;
 const creditor = require("./");
+var os = require('os')
+const eol = (os.EOL)
 // const slash = require("slash");
 
 const testutils_mountTestDir = require("#test/testutils/mountTestDir/index.js");
@@ -34,30 +36,34 @@ describe("creditor", () => {
           template: "comps",
           name: "users/login/mainButton",
         });
-        const index_expected =
-          "export const comps_users_login_mainButton = {\n" +
-          "  onMount: async () => {},\n" +
-          "\n" +
-          "  render: () => {\n" +
-          "    return <div>comps_users_login_mainButton placeholder</div>;\n" +
-          "  },\n" +
-          "};\n";
+        const index_expected = [
+          "export const comps_users_login_mainButton = {",
+          "  onMount: async () => {},",
+          "",
+          "  render: () => {",
+          "    return <div>comps_users_login_mainButton placeholder</div>;",
+          "  },",
+          "};",
+          "",
+        ].join(eol);
 
-        const test_expected =
-          'import mod from "@src/comps/users/login/mainButton";\n' +
-          'import expect from "chai";\n' +
-          "\n" +
-          'describe("comps_users_login_mainButton", () => {\n' +
-          '  it("should properly be called", () => {\n' +
-          "    mod();\n" +
-          "  });\n" +
-          "});\n";
+        const test_expected = [
+          'import mod from "@src/comps/users/login/mainButton";', 
+          'import expect from "chai";',
+          "",
+          'describe("comps_users_login_mainButton", () => {',
+          '  it("should properly be called", () => {', 
+          "    mod();", 
+          "  });", 
+          "});",
+          "",
+        ].join(eol);
 
         expect(files[`comps/${name}/index.js`]).to.equal(index_expected);
         expect(files[`comps/${name}/test.js`]).to.equal(test_expected);
       });
 
-      it("should return an empty object when the pattern doesnt exist", async () => {
+      it("should return an empty object when the pattern doesn't exist", async () => {
         const name = "users/login/mainButton";
         const expectedErrorMessage = `the template "nonexistent" is not defined in the templates dir`;
         let actualErrorMessage;

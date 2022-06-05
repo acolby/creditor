@@ -17,7 +17,9 @@ async function fs_writeFile(dir_path, contents) {
   async function mkdirRec(dir, at = 0) {
     const dirItems = dir.split(path.sep).filter((item) => item);
     if (dirItems.length < at) return;
-    const atDir = dirItems.slice(0, at + 1).join(path.sep);
+    //windows dir_path with start with C:/dir/...
+    const prefix = dirItems[0].indexOf(":") === -1 ? path.sep : "";
+    const atDir = `${prefix}${dirItems.slice(0, at + 1).join(path.sep)}`;
 
     const stats = await stat(atDir);
     if (stats && stats.isDirectory()) return mkdirRec(dir, at + 1);

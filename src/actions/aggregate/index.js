@@ -1,4 +1,3 @@
-const fs = require("fs");
 const utils_renderAggregator = require("#src/utils/renderAggregator/index.js");
 
 async function actions_aggregate(options, { template }) {

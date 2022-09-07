@@ -6,6 +6,7 @@ const package = require("./package.json");
 const creditor = require("./src");
 const utils_prompt = require("./src/utils/prompt");
 const path = require("path");
+const utils_slash = require("./src/utils/slash/index.js");
 
 const program = new Command();
 
@@ -19,12 +20,15 @@ program
   .description("Have the command prop walk you through the running creditor")
   .option("--src", 'location of of your source code (default: "/src")')
   .option("--verbose", "show additional information")
-  .option("--repeat", "relaunch Creditor after completion (for multiple operations)", false)
+  .option(
+    "--repeat",
+    "relaunch Creditor after completion (for multiple operations)",
+    false
+  )
   .action(async (options) => {
-    
     const prompts = _prompts(); // where the answers will be stored
     const answers = {};
-    answers["repeat"] = options.repeat;   
+    answers["repeat"] = options.repeat;
 
     do {
       const credInfo = await initCred(options);
@@ -34,7 +38,7 @@ program
       if (answers.action === "create") {
         await instance.create({
           template: answers.template,
-          name: answers.mkLoc,
+          name: utils_slash(answers.mkLoc),
         });
       } else if (answers.action === "move") {
         await instance.move({
@@ -46,10 +50,11 @@ program
         await instance.aggregate({
           template: answers.template,
         });
-      } 
-      if (answers.repeat) console.log("Action complete. Press CTRL + C to exit script")
-    }while (options.repeat);
-    });
+      }
+      if (answers.repeat)
+        console.log("Action complete. Press CTRL + C to exit script");
+    } while (options.repeat);
+  });
 
 program
   .command("create <destination>")
@@ -185,7 +190,9 @@ function _prompts() {
         type: "autocomplete",
         name: "mkLoc",
         suggestOnly: true,
-        message: `Where would you like to put the new "${answers.template}" within ${path.sep + answers.template + path.sep}?`,
+        message: `Where would you like to put the new "${
+          answers.template
+        }" within ${path.sep + answers.template + path.sep}?`,
         source: async (_, input) => {
           return Promise.resolve(
             _fuzzySearchPath(input, answers.template, analysis)
@@ -193,7 +200,7 @@ function _prompts() {
         },
         validate: (input) => {
           if (!input) return "This question is required";
-          input = path.normalize(input);
+          input = utils_slash(input)
           if (
             input !==
             `${input || ""}`
@@ -205,12 +212,20 @@ function _prompts() {
           )
             return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
           if (input === path.sep)
-            return `Template can not be created at the top of the ${path.sep + answers.template} directory`;
-          if (analysis.package.uses[path.normalize(answers.template + path.sep + input)])
-            return `${path.normalize(input)} already exists within ${path.sep + answers.template + path.sep}`;
+            return `Template can not be created at the top of the ${
+              path.sep + answers.template
+            } directory`;
+          if (
+            analysis.package.uses[
+              path.normalize(answers.template + path.sep + input)
+            ]
+          )
+            return `${path.normalize(input)} already exists within ${
+              path.sep + answers.template + path.sep
+            }`;
           return true;
         },
-        nextPrompt(){},
+        nextPrompt() {},
       };
     },
     mvSrc: (params) => {
@@ -239,11 +254,17 @@ function _prompts() {
           )
             return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
           if (input === path.sep)
-            return `You may not not move the root ${path.sep + answers.template} directory`;
-          //check if directory exists
-          const match = Object.keys(analysis.package.usesObj[answers.template]).find(key => key === input.split(path.sep).at(-1))          
-          if (typeof match === 'undefined')
-            return `${path.normalize(input)} is not an existing directory`;
+            return `You may not not move the root ${
+              path.sep + answers.template
+            } directory`;
+          if (
+            !_itemExistsIn(
+              analysis.package.usesObj[answers.template],
+              input.split(path.sep)
+            )
+          )
+            if (typeof match === "undefined")
+              return `${path.normalize(input)} is not an existing directory`;
           return true;
         },
         nextPrompt() {
@@ -283,26 +304,23 @@ function _prompts() {
   };
 }
 
-async function initCred(options){
-    const instance = creditor({
-      rel_src: options.src,
-      verbose: options.verbose,
-    });
-    await instance.init();
-    const analysis = {
-      templates: instance.options.templates,
-      package: instance.options.package,
-    };
-    return [instance, analysis];
+async function initCred(options) {
+  const instance = creditor({
+    rel_src: options.src,
+    verbose: options.verbose,
+  });
+  await instance.init();
+  const analysis = {
+    templates: instance.options.templates,
+    package: instance.options.package,
+  };
+  return [instance, analysis];
 }
-
 
 function _fuzzySearchPath(input, template, analysis) {
   const sanitized = `${input || ""}`
     .replace(/[^(a-zA-Z)/|\\]/g, "")
-    .replace(/\/{2,}|\\{3,}/g, path.sep)
-;
-
+    .replace(/\/{2,}|\\{3,}/g, path.sep);
   // default uses by is template
   let usesBy = analysis.package.usesObj[template] || {};
 
@@ -314,8 +332,20 @@ function _fuzzySearchPath(input, template, analysis) {
   const suggestions = Object.keys(usesBy || {}).map(
     (item) => `${prefix}${(prefix && path.sep) || ""}${item + path.sep}`
   );
-  const results = fuzzy(path.normalize(sanitized), suggestions || []).sort((a, b) => {
-    return a.length - b.length;
-  });
+  const results = fuzzy(path.normalize(sanitized), suggestions || []).sort(
+    (a, b) => {
+      return a.length - b.length;
+    }
+  );
   return [sanitized, ...results];
+}
+
+function _itemExistsIn(structure = {}, items = []) {
+  const first = items[0];
+  const substructure = structure[first];
+  if (items.length <= 1) {
+    return !!substructure;
+  }
+  if (!substructure) return false;
+  return _itemExistsIn(substructure, items.slice(1));
 }

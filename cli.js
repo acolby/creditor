@@ -6,6 +6,7 @@ const package = require("./package.json");
 const creditor = require("./src");
 const utils_prompt = require("./src/utils/prompt");
 const path = require("path");
+const utils_slash = require("./src/utils/slash/index.js");
 
 const program = new Command();
 
@@ -37,7 +38,7 @@ program
       if (answers.action === "create") {
         await instance.create({
           template: answers.template,
-          name: answers.mkLoc,
+          name: utils_slash(answers.mkLoc),
         });
       } else if (answers.action === "move") {
         await instance.move({
@@ -199,7 +200,7 @@ function _prompts() {
         },
         validate: (input) => {
           if (!input) return "This question is required";
-          input = path.normalize(input);
+          input = utils_slash(input)
           if (
             input !==
             `${input || ""}`

@@ -144,6 +144,30 @@ program
     }
   });
 
+program
+  .command("analyse")
+  .description(
+    "Create an output object containing an analysis of the pattern usage"
+  )
+  .option("--src", 'location of of your source code (default: "/src")')
+  .option("--verbose", "show additional information")
+  .option("--output", "location the anaysis will be written to")
+  .action(async (options) => {
+    const instance = creditor({
+      rel_src: options.src,
+      verbose: options.verbose,
+    });
+    try {
+      await instance.init();
+      const package = instance.analyse({
+        rel_output: options.output,
+      });
+      return package;
+    } catch (e) {
+      console.log("ERROR::", e.message, "--", e.stack.split("\n")[0]);
+    }
+  });
+
 program.parse();
 
 function _prompts() {

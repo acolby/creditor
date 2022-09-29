@@ -8,6 +8,7 @@ const utils_analyzeSrc = require("#src/utils/analyzeSrc/index.js");
 const actions_create = require("#src/actions/create/index.js");
 const actions_move = require("#src/actions/move/index.js");
 const actions_aggregate = require("#src/actions/aggregate/index.js");
+const actions_analyse = require("#src/actions/analyse/index.js");
 
 const fs_commitFileObject = require("#src/fs/commitFileObject/index.js");
 
@@ -34,21 +35,34 @@ function creditor(given = {}) {
 
   async function init() {
     // load templates
-    options.path_src = utils_slash(path.join(options.path_base, options.rel_src));
-    options.path_templates = utils_slash(path.join(
-      options.path_base,
-      options.rel_templates
-    ));
-    options.path_aggregators = utils_slash(path.join(
-      options.path_base,
-      options.rel_aggregators
-    ));
+    options.path_src = utils_slash(
+      path.join(options.path_base, options.rel_src)
+    );
+    options.path_templates = utils_slash(
+      path.join(options.path_base, options.rel_templates)
+    );
+    options.path_aggregators = utils_slash(
+      path.join(options.path_base, options.rel_aggregators)
+    );
     options.templates = utils_loadTemplates(options);
     options.aggregators = utils_loadAggregators(options);
     options.package = await utils_analyzeSrc(options);
 
     isInit = true;
     return options;
+  }
+  async function analyse({ rel_output }) {
+    console.log("options.package", rel_output, options.package);
+    //  if (!path_output) {
+    //    throw new Error("an output location must be specified");
+    //  }
+    // await fs_commitFileObject({
+    //   toCreate: files,
+    //   path_base: options.path_src,
+    //   rel_base: options.rel_src,
+    //   verbose: options.verbose,
+    // });
+    // return { files };
   }
   async function aggregate({ template }) {
     if (!template) {
@@ -163,6 +177,7 @@ function creditor(given = {}) {
     move,
     create,
     aggregate,
+    analyse,
     options: options,
   };
 }

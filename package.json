@@ -1,7 +1,7 @@
 {
   "name": "@acolby/creditor",
-  "version": "0.3.1",
-  "description": "Creditor is used to for maintaining and scaffolding boiler plate templates code within a repository. Once templates are defined, Creditor makes it easy create, rename, moved, analyze and used these templates.",
+  "version": "0.3.2",
+  "description": "Creditor is used to for maintaining and scaffolding boiler plate templates code within a repository. Once templates are defined, Creditor makes it easy create, rename, move, analyze and useduse use templates.",
   "main": "index.js",
   "directories": {
     "lib": "lib",
@@ -30,6 +30,10 @@
   },
   "author": "acolby",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:acolby/creditor.git"
+  },
   "devDependencies": {
     "chai": "^4.3.6",
     "mocha": "^9.2.0",

@@ -54,8 +54,8 @@ program
           template: answers.template,
           name: answers.delLoc,
         });
-      } else if (answers.action === "analyse") {
-        await instance.analyse({
+      } else if (answers.action === "analyze") {
+        await instance.analyze({
           rel_output: answers.anLoc,
         });
       }
@@ -176,7 +176,7 @@ program
   });
 
 program
-  .command("analyse")
+  .command("analyze")
   .description(
     "Create an output object containing an analysis of the pattern usage"
   )
@@ -193,7 +193,7 @@ program
     });
     try {
       await instance.init();
-      const package = instance.analyse({
+      const package = instance.analyze({
         rel_output: options.output || false,
       });
       return package;
@@ -212,7 +212,7 @@ function _prompts() {
         type: "list",
         name: "action",
         message: "What action would you like to perform?",
-        choices: ["create", "move", "aggregate", "analyse", "remove", "leave"],
+        choices: ["create", "move", "aggregate", "analyze", "remove", "leave"],
         nextPrompt() {
           if (
             answers.action === "create" ||
@@ -221,7 +221,7 @@ function _prompts() {
             answers.action === "remove"
           )
             return "template";
-          if (answers.action === "analyse") return "anLoc";
+          if (answers.action === "analyze") return "anLoc";
         },
       };
     },

@@ -8,7 +8,7 @@ const utils_analyzeSrc = require("#src/utils/analyzeSrc/index.js");
 const actions_create = require("#src/actions/create/index.js");
 const actions_move = require("#src/actions/move/index.js");
 const actions_aggregate = require("#src/actions/aggregate/index.js");
-const actions_analyse = require("#src/actions/analyse/index.js");
+const actions_analyze = require("#src/actions/analyze/index.js");
 const actions_remove = require("#src/actions/remove/index.js");
 
 const fs_commitFileObject = require("#src/fs/commitFileObject/index.js");
@@ -52,15 +52,15 @@ function creditor(given = {}) {
     isInit = true;
     return options;
   }
-  async function analyse({ rel_output }) {
-    const { files, analyse } = await actions_analyse(options, { rel_output });
+  async function analyze({ rel_output }) {
+    const { files, analyze } = await actions_analyze(options, { rel_output });
     await fs_commitFileObject({
       toCreate: files,
       path_base: process.cwd(),
       rel_base: "",
       verbose: options.verbose,
     });
-    return { files, analyse };
+    return { files, analyze };
   }
   async function aggregate({ template }) {
     if (!template) {
@@ -215,7 +215,7 @@ function creditor(given = {}) {
     move,
     create,
     aggregate,
-    analyse,
+    analyze,
     remove,
     options: options,
   };

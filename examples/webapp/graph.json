@@ -1,0 +1,100 @@
+{
+  "comps/asdfasadsfdf": {
+    "uses": {
+      "comps/other/easy": true
+    },
+    "usedBy": {}
+  },
+  "comps/asdfasd": {
+    "uses": {},
+    "usedBy": {}
+  },
+  "comps/asdfasd/nested": {
+    "uses": {},
+    "usedBy": {}
+  },
+  "comps/asdfasdf": {
+    "uses": {},
+    "usedBy": {}
+  },
+  "comps/asdfasdfxxxxx": {
+    "uses": {},
+    "usedBy": {}
+  },
+  "comps/asdfxxxx/asdf": {
+    "uses": {},
+    "usedBy": {}
+  },
+  "comps/asdfxxxx": {
+    "uses": {},
+    "usedBy": {}
+  },
+  "comps/forms/button": {
+    "uses": {},
+    "usedBy": {}
+  },
+  "comps/jason": {
+    "uses": {},
+    "usedBy": {}
+  },
+  "comps/other/easy": {
+    "uses": {},
+    "usedBy": {
+      "comps/asdfasadsfdf": true
+    }
+  },
+  "comps/other/other/asdf": {
+    "uses": {},
+    "usedBy": {}
+  },
+  "comps/other/other/asdfas": {
+    "uses": {},
+    "usedBy": {}
+  },
+  "comps/other/other": {
+    "uses": {},
+    "usedBy": {}
+  },
+  "comps/other/other/sd": {
+    "uses": {},
+    "usedBy": {}
+  },
+  "comps/other/other/sdfsdf": {
+    "uses": {},
+    "usedBy": {}
+  },
+  "comps/other/other/test": {
+    "uses": {},
+    "usedBy": {}
+  },
+  "comps/other/other/test/test": {
+    "uses": {},
+    "usedBy": {}
+  },
+  "stores/test/asdfsadf": {
+    "uses": {
+      "stores/user": true
+    },
+    "usedBy": {}
+  },
+  "stores/test": {
+    "uses": {
+      "stores/user": true
+    },
+    "usedBy": {}
+  },
+  "stores/test/profile": {
+    "uses": {
+      "stores/user": true
+    },
+    "usedBy": {}
+  },
+  "stores/user": {
+    "uses": {},
+    "usedBy": {
+      "stores/test/asdfsadf": true,
+      "stores/test": true,
+      "stores/test/profile": true
+    }
+  }
+}

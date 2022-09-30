@@ -52,17 +52,14 @@ function creditor(given = {}) {
     return options;
   }
   async function analyse({ rel_output }) {
-    console.log("options.package", rel_output, options.package);
-    //  if (!path_output) {
-    //    throw new Error("an output location must be specified");
-    //  }
-    // await fs_commitFileObject({
-    //   toCreate: files,
-    //   path_base: options.path_src,
-    //   rel_base: options.rel_src,
-    //   verbose: options.verbose,
-    // });
-    // return { files };
+    const { files, analyse } = await actions_analyse(options, { rel_output });
+    await fs_commitFileObject({
+      toCreate: files,
+      path_base: process.cwd(),
+      rel_base: "",
+      verbose: options.verbose,
+    });
+    return { files, analyse };
   }
   async function aggregate({ template }) {
     if (!template) {

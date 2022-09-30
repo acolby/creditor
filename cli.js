@@ -17,7 +17,7 @@ program
 program
   .command("inquire")
   .description("Have the command prop walk you through the running creditor")
-  .option("--src", 'location of of your source code (default: "/src")')
+  .option("--src <src>", 'location of of your source code (default: "./src")')
   .option("--verbose", "show additional information")
   .option(
     "--repeat",
@@ -58,10 +58,7 @@ program
 program
   .command("create <destination>")
   .description("Create a template defined in you templates directory")
-  .option(
-    "--src <rel_src>",
-    'location of of your source code (default: "/src")'
-  )
+  .option("--src <src>", 'location of of your source code (default: "./src")')
   .option("--verbose", "show additional information")
   .action(async (location, options) => {
     const instance = creditor({
@@ -88,7 +85,7 @@ program
   .description(
     "Move (recursively) an template defined in you templates directory"
   )
-  .option("--src", 'location of of your source code (default: "/src")')
+  .option("--src <src>", 'location of of your source code (default: "./src")')
   .option("--verbose", "show additional information")
   .action(async (source, dest, options) => {
     const instance = creditor({
@@ -127,7 +124,7 @@ program
   .description(
     "Aggregate the items of the given template according the the given aggregators"
   )
-  .option("--src", 'location of of your source code (default: "/src")')
+  .option("--src <src>", 'location of of your source code (default: "./src")')
   .option("--verbose", "show additional information")
   .action(async (template, options) => {
     const instance = creditor({
@@ -149,9 +146,12 @@ program
   .description(
     "Create an output object containing an analysis of the pattern usage"
   )
-  .option("--src", 'location of of your source code (default: "/src")')
+  .option("--src <src>", 'location of of your source code (default: "./src")')
   .option("--verbose", "show additional information")
-  .option("--output", "location the anaysis will be written to")
+  .option(
+    "--output <output>",
+    "location the anaysis will be written to (default: './creditorAnalysis.json'"
+  )
   .action(async (options) => {
     const instance = creditor({
       rel_src: options.src,
@@ -160,7 +160,7 @@ program
     try {
       await instance.init();
       const package = instance.analyse({
-        rel_output: options.output,
+        rel_output: options.output || false,
       });
       return package;
     } catch (e) {
@@ -183,6 +183,7 @@ function _prompts() {
           "move",
           "aggregate",
           // 'analyze',
+          // 'close', // TODO
         ],
         nextPrompt() {
           if (
@@ -340,6 +341,7 @@ async function initCred(options) {
   return [instance, analysis];
 }
 
+// TODO _fuzzySearchPath for empty path
 function _fuzzySearchPath(input, template, analysis) {
   const sanitized = `${input || ""}`
     .replace(/[^(a-zA-Z)/|\\]/g, "")

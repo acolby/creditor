@@ -1,0 +1,18 @@
+{
+  "comps/root": {
+    "uses": {
+      "stores/user": true
+    },
+    "usedBy": {}
+  },
+  "stores/user/access": {
+    "uses": {},
+    "usedBy": {}
+  },
+  "stores/user": {
+    "uses": {},
+    "usedBy": {
+      "comps/root": true
+    }
+  }
+}

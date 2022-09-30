@@ -13,6 +13,7 @@ async function utils_analyzeSrc(options) {
   const uses = {};
   const usedBy = {};
   const usesInFiles = {};
+  const graph = {};
 
   const aggregatorFiles = Object.keys(aggregators).reduce((acc, key) => {
     const aggregator = aggregators[key];
@@ -34,16 +35,24 @@ async function utils_analyzeSrc(options) {
 
         usesInFiles[folderPath][fileName] = {};
 
+        graph[folderPath] = graph[folderPath] || { uses: {}, usedBy: {} };
+
         await fs_processLineByLine(
           `${path_src}/${filePath}`,
           (line, lineNumber) => {
             const usages = utils_parsePatternUsage({ templates }, line);
             usages.forEach((usage) => {
               if (usage === folderPath) return;
+
               uses[folderPath][usage] = true;
               usedBy[usage] = usedBy[usage] || {};
               usedBy[usage][folderPath] = true;
               usesInFiles[folderPath][fileName][usage] = true;
+
+              // also add to the graph object
+              graph[usage] = graph[usage] || { uses: {}, usedBy: {} };
+              graph[folderPath].uses[usage] = true;
+              graph[usage].usedBy[folderPath] = true;
             });
           }
         );
@@ -71,6 +80,7 @@ async function utils_analyzeSrc(options) {
     usedBy: usedBy,
     usesInFiles: usesInFiles,
     usesObj: usesObj,
+    graph: graph,
   };
 }
 

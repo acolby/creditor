@@ -35,7 +35,6 @@ describe("creditor", () => {
         expect(Object.keys(files).length).to.equal(0);
         expect(Object.keys(analyse).length > 0).to.equal(true);
       });
-
       it("should properly output to given output the src", async () => {
         const { files, analyse } = await instance.analyse({
           rel_output: "graph.json",

@@ -49,6 +49,12 @@ program
         await instance.aggregate({
           template: answers.template,
         });
+      } else if (answers.action === "delete") {
+        console.log("TODO implement delete", answers);
+      } else if (answers.action === "analyse") {
+        await instance.analyse({
+          rel_output: answers.anLoc,
+        });
       }
       if (answers.repeat)
         console.log("Action complete. Press CTRL + C to exit script");
@@ -178,20 +184,16 @@ function _prompts() {
         type: "list",
         name: "action",
         message: "What action would you like to perform?",
-        choices: [
-          "create",
-          "move",
-          "aggregate",
-          // 'analyze',
-          // 'close', // TODO
-        ],
+        choices: ["create", "move", "aggregate", "analyse", "delete", "leave"],
         nextPrompt() {
           if (
             answers.action === "create" ||
             answers.action === "move" ||
-            answers.action === "aggregate"
+            answers.action === "aggregate" ||
+            answers.action === "delete"
           )
             return "template";
+          if (answers.action === "analyse") return "anLoc";
         },
       };
     },
@@ -205,6 +207,7 @@ function _prompts() {
         nextPrompt() {
           if (answers.action === "create") return "mkLoc";
           if (answers.action === "move") return "mvSrc";
+          if (answers.action === "delete") return "delLoc";
         },
       };
     },
@@ -225,15 +228,7 @@ function _prompts() {
         validate: (input) => {
           if (!input) return "This question is required";
           input = path.normalize(input);
-          if (
-            input !==
-            `${input || ""}`
-              .replace(/[^(a-zA-Z)/|\\]/g, "")
-              .replace(/\/{2,}|\\{3,}/g, path.sep)
-              .split(path.sep)
-              .filter((item) => item)
-              .join(path.sep)
-          )
+          if (_isValidDir(input))
             return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
           if (input === path.sep)
             return `Template can not be created at the top of the ${
@@ -247,6 +242,64 @@ function _prompts() {
             return `${path.normalize(input)} already exists within ${
               path.sep + answers.template + path.sep
             }`;
+          return true;
+        },
+        nextPrompt() {},
+      };
+    },
+    anLoc: (params) => {
+      const { answers, promps, analysis } = params;
+      return {
+        type: "input",
+        name: "anLoc",
+        message: `Where would you like to output the analysis? (default: ./graph.json)`,
+        source: async (_, input) => {
+          return input || "";
+        },
+        validate: (input) => {
+          if (!_isValidRel(input))
+            return `${input} is not a valid directory of form .${path.sep}filename.json`;
+
+          return true;
+        },
+        nextPrompt() {},
+      };
+    },
+    delLoc: (params) => {
+      const { answers, promps, analysis } = params;
+      return {
+        type: "autocomplete",
+        name: "delLoc",
+        suggestOnly: true,
+        message: `What ${answers.template} would you like to delete within ${
+          path.sep + answers.template + path.sep
+        }?`,
+        source: async (_, input) => {
+          return Promise.resolve(
+            _fuzzySearchPath(input, answers.template, analysis)
+          );
+        },
+        validate: (input) => {
+          if (!input) return "This question is required";
+          input = path.normalize(input);
+          if (_isValidDir(input))
+            return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
+          if (input === path.sep)
+            return `Cannot delete the root of ${
+              path.sep + answers.template
+            } directory`;
+          if (
+            Object.keys(
+              analysis.package.usedBy[
+                path.normalize(answers.template + path.sep + input)
+              ]
+            ).length > 0
+          )
+            return `${path.normalize(input)} is being used by ${Object.keys(
+              analysis.package.usedBy[
+                path.normalize(answers.template + path.sep + input)
+              ]
+            )}`;
           return true;
         },
         nextPrompt() {},
@@ -267,15 +320,7 @@ function _prompts() {
         validate: (input) => {
           if (!input) return "This question is required";
           input = path.normalize(input);
-          if (
-            input !==
-            `${input || ""}`
-              .replace(/[^(a-zA-Z)/|\\]/g, "")
-              .replace(/\/{2,}|\\{3,}/g, path.sep)
-              .split(path.sep)
-              .filter((item) => item)
-              .join(path.sep)
-          )
+          if (_isValidDir(input))
             return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
           if (input === path.sep)
             return `You may not not move the root ${
@@ -310,15 +355,7 @@ function _prompts() {
         },
         validate: (input) => {
           if (!input) return "This question is required";
-          if (
-            input !==
-            `${input || ""}`
-              .replace(/[^(a-zA-Z)/|\\]/g, "")
-              .replace(/\/{2,}|\\{3,}/g, path.sep)
-              .split(path.sep)
-              .filter((item) => item)
-              .join(path.sep)
-          )
+          if (_isValidDir(input))
             return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
           return true;
         },
@@ -377,4 +414,21 @@ function _itemExistsIn(structure = {}, items = []) {
   }
   if (!substructure) return false;
   return _itemExistsIn(substructure, items.slice(1));
+}
+
+function _isValidDir(input) {
+  return (
+    input !==
+    `${input || ""}`
+      .replace(/[^(a-zA-Z)/|\\]/g, "")
+      .replace(/\/{2,}|\\{3,}/g, path.sep)
+      .split(path.sep)
+      .filter((item) => item)
+      .join(path.sep)
+  );
+}
+
+function _isValidRel(input = "") {
+  const extn = input.split(".").slice(-1) && input.split(".").slice(-1)[0];
+  return input.indexOf(`.${path.sep}`) === 0 && extn === "json";
 }

@@ -191,7 +191,6 @@ function creditor(given = {}) {
       name,
     });
 
-    console.log("-- flies", files);
     await fs_commitFileObject({
       toDelete: files,
       path_base: options.path_src,

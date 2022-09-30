@@ -353,15 +353,19 @@ function _fuzzySearchPath(input, template, analysis) {
   segments.forEach((item) => {
     usesBy = usesBy[item] || {};
   });
+
   const prefix = segments.join(path.sep);
   const suggestions = Object.keys(usesBy || {}).map(
     (item) => `${prefix}${(prefix && path.sep) || ""}${item + path.sep}`
   );
-  const results = fuzzy(path.normalize(sanitized), suggestions || []).sort(
-    (a, b) => {
-      return a.length - b.length;
-    }
-  );
+
+  const results = (
+    (sanitized && fuzzy(path.normalize(sanitized) || "", suggestions || [])) ||
+    suggestions ||
+    []
+  ).sort((a, b) => {
+    return a.length - b.length;
+  });
   return [sanitized, ...results];
 }
 

@@ -1,8 +1,11 @@
 const fs_directoryTree = require("#src/fs/directoryTree/index.js");
 const fs_processLineByLine = require("#src/fs/processLineByLine/index.js");
 const utils_parsePatternUsage = require("#src/utils/parsePatternUsage/index.js");
+const path = require("path");
 
-async function utils_analyzeSrc({ path_src, templates }) {
+async function utils_analyzeSrc(options) {
+  const { path_src, aggregators, templates } = options;
+
   const allfiles = (await fs_directoryTree(path_src)).map(
     (location) => location.split(`${path_src}/`)[1]
   );
@@ -11,30 +14,40 @@ async function utils_analyzeSrc({ path_src, templates }) {
   const usedBy = {};
   const usesInFiles = {};
 
+  const aggregatorFiles = Object.keys(aggregators).reduce((acc, key) => {
+    const aggregator = aggregators[key];
+    aggregator.files.forEach((file) => {
+      acc[`${key}${path.sep}${file}`] = true;
+    });
+    return acc;
+  }, {});
+
   await Promise.all(
-    allfiles.map(async (filePath) => {
-      const folderPath = filePath.split("/").slice(0, -1).join("/");
-      const fileName = filePath.split("/").pop();
+    allfiles
+      .filter((file) => !aggregatorFiles[file])
+      .map(async (filePath) => {
+        const folderPath = filePath.split("/").slice(0, -1).join("/");
+        const fileName = filePath.split("/").pop();
 
-      usesInFiles[folderPath] = usesInFiles[folderPath] || {};
-      uses[folderPath] = uses[folderPath] || {};
+        usesInFiles[folderPath] = usesInFiles[folderPath] || {};
+        uses[folderPath] = uses[folderPath] || {};
 
-      usesInFiles[folderPath][fileName] = {};
+        usesInFiles[folderPath][fileName] = {};
 
-      await fs_processLineByLine(
-        `${path_src}/${filePath}`,
-        (line, lineNumber) => {
-          const usages = utils_parsePatternUsage({ templates }, line);
-          usages.forEach((usage) => {
-            if (usage === folderPath) return;
-            uses[folderPath][usage] = true;
-            usedBy[usage] = usedBy[usage] || {};
-            usedBy[usage][folderPath] = true;
-            usesInFiles[folderPath][fileName][usage] = true;
-          });
-        }
-      );
-    })
+        await fs_processLineByLine(
+          `${path_src}/${filePath}`,
+          (line, lineNumber) => {
+            const usages = utils_parsePatternUsage({ templates }, line);
+            usages.forEach((usage) => {
+              if (usage === folderPath) return;
+              uses[folderPath][usage] = true;
+              usedBy[usage] = usedBy[usage] || {};
+              usedBy[usage][folderPath] = true;
+              usesInFiles[folderPath][fileName][usage] = true;
+            });
+          }
+        );
+      })
   );
 
   usesObj = {};

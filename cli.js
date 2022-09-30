@@ -18,7 +18,7 @@ program
 program
   .command("inquire")
   .description("Have the command prop walk you through the running creditor")
-  .option("--src", 'location of of your source code (default: "/src")')
+  .option("--src <src>", 'location of of your source code (default: "./src")')
   .option("--verbose", "show additional information")
   .option(
     "--repeat",
@@ -50,6 +50,15 @@ program
         await instance.aggregate({
           template: answers.template,
         });
+      } else if (answers.action === "remove") {
+        await instance.remove({
+          template: answers.template,
+          name: answers.delLoc,
+        });
+      } else if (answers.action === "analyse") {
+        await instance.analyse({
+          rel_output: answers.anLoc,
+        });
       }
       if (answers.repeat)
         console.log("Action complete. Press CTRL + C to exit script");
@@ -58,11 +67,8 @@ program
 
 program
   .command("create <destination>")
-  .description("Create a template defined in you templates directory")
-  .option(
-    "--src <rel_src>",
-    'location of of your source code (default: "/src")'
-  )
+  .description("Create a template defined in your templates directory")
+  .option("--src <src>", 'location of of your source code (default: "./src")')
   .option("--verbose", "show additional information")
   .action(async (location, options) => {
     const instance = creditor({
@@ -85,11 +91,36 @@ program
   });
 
 program
+  .command("remove <source>")
+  .description("remove a template in your templates directory")
+  .option("--src <src>", 'location of of your source code (default: "./src")')
+  .option("--verbose", "show additional information")
+  .action(async (location, options) => {
+    const instance = creditor({
+      rel_src: options.src,
+      verbose: options.verbose,
+    });
+    try {
+      await instance.init();
+      await instance.remove({
+        template: location.split(path.sep).filter((item) => item)[0],
+        name: location
+          .split(path.sep)
+          .filter((item) => item)
+          .slice(1)
+          .join(path.sep),
+      });
+    } catch (e) {
+      console.log("ERROR::", e.message, "--", e.stack.split("\n")[0]);
+    }
+  });
+
+program
   .command("move <source> <destination>")
   .description(
-    "Move (recursively) an template defined in you templates directory"
+    "Move (recursively) an template defined in your templates directory"
   )
-  .option("--src", 'location of of your source code (default: "/src")')
+  .option("--src <src>", 'location of of your source code (default: "./src")')
   .option("--verbose", "show additional information")
   .action(async (source, dest, options) => {
     const instance = creditor({
@@ -128,7 +159,7 @@ program
   .description(
     "Aggregate the items of the given template according the the given aggregators"
   )
-  .option("--src", 'location of of your source code (default: "/src")')
+  .option("--src <src>", 'location of of your source code (default: "./src")')
   .option("--verbose", "show additional information")
   .action(async (template, options) => {
     const instance = creditor({
@@ -145,6 +176,33 @@ program
     }
   });
 
+program
+  .command("analyse")
+  .description(
+    "Create an output object containing an analysis of the pattern usage"
+  )
+  .option("--src <src>", 'location of of your source code (default: "./src")')
+  .option("--verbose", "show additional information")
+  .option(
+    "--output <output>",
+    "location the anaysis will be written to (default: './creditorAnalysis.json'"
+  )
+  .action(async (options) => {
+    const instance = creditor({
+      rel_src: options.src,
+      verbose: options.verbose,
+    });
+    try {
+      await instance.init();
+      const package = instance.analyse({
+        rel_output: options.output || false,
+      });
+      return package;
+    } catch (e) {
+      console.log("ERROR::", e.message, "--", e.stack.split("\n")[0]);
+    }
+  });
+
 program.parse();
 
 function _prompts() {
@@ -155,19 +213,16 @@ function _prompts() {
         type: "list",
         name: "action",
         message: "What action would you like to perform?",
-        choices: [
-          "create",
-          "move",
-          "aggregate",
-          // 'analyze',
-        ],
+        choices: ["create", "move", "aggregate", "analyse", "remove", "leave"],
         nextPrompt() {
           if (
             answers.action === "create" ||
             answers.action === "move" ||
-            answers.action === "aggregate"
+            answers.action === "aggregate" ||
+            answers.action === "remove"
           )
             return "template";
+          if (answers.action === "analyse") return "anLoc";
         },
       };
     },
@@ -181,6 +236,7 @@ function _prompts() {
         nextPrompt() {
           if (answers.action === "create") return "mkLoc";
           if (answers.action === "move") return "mvSrc";
+          if (answers.action === "remove") return "delLoc";
         },
       };
     },
@@ -200,16 +256,8 @@ function _prompts() {
         },
         validate: (input) => {
           if (!input) return "This question is required";
-          input = utils_slash(input)
-          if (
-            input !==
-            `${input || ""}`
-              .replace(/[^(a-zA-Z)/|\\]/g, "")
-              .replace(/\/{2,}|\\{3,}/g, path.sep)
-              .split(path.sep)
-              .filter((item) => item)
-              .join(path.sep)
-          )
+          input = path.normalize(input);
+          if (_isValidDir(input))
             return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
           if (input === path.sep)
             return `Template can not be created at the top of the ${
@@ -223,6 +271,65 @@ function _prompts() {
             return `${path.normalize(input)} already exists within ${
               path.sep + answers.template + path.sep
             }`;
+          return true;
+        },
+        nextPrompt() {},
+      };
+    },
+    anLoc: (params) => {
+      const { answers, promps, analysis } = params;
+      return {
+        type: "input",
+        name: "anLoc",
+        message: `Where would you like to output the analysis? (default: ./graph.json)`,
+        source: async (_, input) => {
+          return input || "";
+        },
+        validate: (input) => {
+          if (!_isValidRel(input))
+            return `${input} is not a valid directory of form .${path.sep}filename.json`;
+
+          return true;
+        },
+        nextPrompt() {},
+      };
+    },
+    delLoc: (params) => {
+      const { answers, promps, analysis } = params;
+      return {
+        type: "autocomplete",
+        name: "delLoc",
+        suggestOnly: true,
+        message: `What ${answers.template} would you like to remove within ${
+          path.sep + answers.template + path.sep
+        }?`,
+        source: async (_, input) => {
+          return Promise.resolve(
+            _fuzzySearchPath(input, answers.template, analysis)
+          );
+        },
+        validate: (input) => {
+          if (!input) return "This question is required";
+          input = path.normalize(input);
+          const loc = path.normalize(answers.template + path.sep + input);
+          if (_isValidDir(input))
+            return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
+
+          if (!analysis.package.uses[loc]) {
+            return `${path.normalize(
+              answers.template + path.sep + input
+            )} does not exist in ${answers.template}`;
+          }
+          if (_isValidDir(input))
+            return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
+          if (input === path.sep)
+            return `Cannot remove the root of ${
+              path.sep + answers.template
+            } directory`;
+          if (Object.keys(analysis.package.usedBy[loc] || {}).length > 0)
+            return `${path.normalize(input)} is being used by ${Object.keys(
+              analysis.package.usedBy[loc]
+            )}`;
           return true;
         },
         nextPrompt() {},
@@ -243,15 +350,7 @@ function _prompts() {
         validate: (input) => {
           if (!input) return "This question is required";
           input = path.normalize(input);
-          if (
-            input !==
-            `${input || ""}`
-              .replace(/[^(a-zA-Z)/|\\]/g, "")
-              .replace(/\/{2,}|\\{3,}/g, path.sep)
-              .split(path.sep)
-              .filter((item) => item)
-              .join(path.sep)
-          )
+          if (_isValidDir(input))
             return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
           if (input === path.sep)
             return `You may not not move the root ${
@@ -286,15 +385,7 @@ function _prompts() {
         },
         validate: (input) => {
           if (!input) return "This question is required";
-          if (
-            input !==
-            `${input || ""}`
-              .replace(/[^(a-zA-Z)/|\\]/g, "")
-              .replace(/\/{2,}|\\{3,}/g, path.sep)
-              .split(path.sep)
-              .filter((item) => item)
-              .join(path.sep)
-          )
+          if (_isValidDir(input))
             return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
           return true;
         },
@@ -317,6 +408,7 @@ async function initCred(options) {
   return [instance, analysis];
 }
 
+// TODO _fuzzySearchPath for empty path
 function _fuzzySearchPath(input, template, analysis) {
   const sanitized = `${input || ""}`
     .replace(/[^(a-zA-Z)/|\\]/g, "")
@@ -328,15 +420,19 @@ function _fuzzySearchPath(input, template, analysis) {
   segments.forEach((item) => {
     usesBy = usesBy[item] || {};
   });
+
   const prefix = segments.join(path.sep);
   const suggestions = Object.keys(usesBy || {}).map(
     (item) => `${prefix}${(prefix && path.sep) || ""}${item + path.sep}`
   );
-  const results = fuzzy(path.normalize(sanitized), suggestions || []).sort(
-    (a, b) => {
-      return a.length - b.length;
-    }
-  );
+
+  const results = (
+    (sanitized && fuzzy(path.normalize(sanitized) || "", suggestions || [])) ||
+    suggestions ||
+    []
+  ).sort((a, b) => {
+    return a.length - b.length;
+  });
   return [sanitized, ...results];
 }
 
@@ -348,4 +444,21 @@ function _itemExistsIn(structure = {}, items = []) {
   }
   if (!substructure) return false;
   return _itemExistsIn(substructure, items.slice(1));
+}
+
+function _isValidDir(input) {
+  return (
+    input !==
+    `${input || ""}`
+      .replace(/[^(a-zA-Z)/|\\]/g, "")
+      .replace(/\/{2,}|\\{3,}/g, path.sep)
+      .split(path.sep)
+      .filter((item) => item)
+      .join(path.sep)
+  );
+}
+
+function _isValidRel(input = "") {
+  const extn = input.split(".").slice(-1) && input.split(".").slice(-1)[0];
+  return input.indexOf(`.${path.sep}`) === 0 && extn === "json";
 }

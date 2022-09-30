@@ -1,7 +1,7 @@
 const expect = require("chai").expect;
 const creditor = require("./");
-var os = require('os')
-const eol = (os.EOL)
+var os = require("os");
+const eol = os.EOL;
 // const slash = require("slash");
 
 const testutils_mountTestDir = require("#test/testutils/mountTestDir/index.js");
@@ -29,6 +29,21 @@ describe("creditor", () => {
       await instance.init();
     });
 
+    describe("actions_anaylse", () => {
+      it("should properly analyise the src", async () => {
+        const { files, analyse } = await instance.analyse({});
+        expect(Object.keys(files).length).to.equal(0);
+        expect(Object.keys(analyse).length > 0).to.equal(true);
+      });
+      it("should properly output to given output the src", async () => {
+        const { files, analyse } = await instance.analyse({
+          rel_output: "graph.json",
+        });
+        expect(Object.keys(files)[0]).to.equal("graph.json");
+        expect(Object.keys(analyse).length > 0).to.equal(true);
+      });
+    });
+
     describe("actions_create", () => {
       it("should properly create the specified pattern in the specified location", async () => {
         const name = "users/login/mainButton";
@@ -48,13 +63,13 @@ describe("creditor", () => {
         ].join(eol);
 
         const test_expected = [
-          'import mod from "@src/comps/users/login/mainButton";', 
+          'import mod from "@src/comps/users/login/mainButton";',
           'import expect from "chai";',
           "",
           'describe("comps_users_login_mainButton", () => {',
-          '  it("should properly be called", () => {', 
-          "    mod();", 
-          "  });", 
+          '  it("should properly be called", () => {',
+          "    mod();",
+          "  });",
           "});",
           "",
         ].join(eol);
@@ -101,6 +116,17 @@ describe("creditor", () => {
         });
         expect(!!templates.toUpdate["stores/index.js"]).to.equal(true);
         expect(!!templates.toUpdate["comps/index.js"]).to.equal(false);
+      });
+    });
+
+    describe("actions_remove", () => {
+      it("should properly move all items in directory", async () => {
+        const { files } = await instance.remove({
+          template: "comps",
+          name: "root",
+        });
+        expect(files["comps/root/index.js"]).to.equal("");
+        expect(files["comps/root/test.js"]).to.equal("");
       });
     });
   });

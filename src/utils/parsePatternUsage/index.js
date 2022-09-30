@@ -45,7 +45,13 @@ function utils_parsePatternUsage(
       while (!terminator && string[col_end]) {
         col_end++;
         const char = string[col_end];
-        terminator = terminators[char] && char !== delimiter && char;
+
+        if (char === delimiter && string[col_end + 1] === delimiter) {
+          // terminate on double delimiter found
+          terminator = `${delimiter}${delimiter}`;
+        } else {
+          terminator = terminators[char] && char !== delimiter && char;
+        }
       }
 
       const items = `${string.slice(col_start, col_end)}`.split(delimiter);

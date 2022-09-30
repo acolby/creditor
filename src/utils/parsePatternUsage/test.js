@@ -85,4 +85,15 @@ describe("utils_parsePatternUsage", () => {
       expect(JSON.stringify(res[1])).to.equal(JSON.stringify(output[1]));
     });
   });
+
+  it("should terminate string if there is a double delimiter", () => {
+    const expected = {
+      "import {dodos_user__meta} ": ["dodos/user"],
+    };
+
+    Object.entries(expected).forEach(([given, output]) => {
+      const res = mod({ templates: { dodos: {}, dingos: {} } }, given);
+      expect(res[0]).to.equal(output[0]);
+    });
+  });
 });

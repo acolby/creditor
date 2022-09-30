@@ -49,8 +49,11 @@ program
         await instance.aggregate({
           template: answers.template,
         });
-      } else if (answers.action === "delete") {
-        console.log("TODO implement delete", answers);
+      } else if (answers.action === "remove") {
+        await instance.remove({
+          template: answers.template,
+          name: answers.delLoc,
+        });
       } else if (answers.action === "analyse") {
         await instance.analyse({
           rel_output: answers.anLoc,
@@ -63,7 +66,7 @@ program
 
 program
   .command("create <destination>")
-  .description("Create a template defined in you templates directory")
+  .description("Create a template defined in your templates directory")
   .option("--src <src>", 'location of of your source code (default: "./src")')
   .option("--verbose", "show additional information")
   .action(async (location, options) => {
@@ -87,9 +90,34 @@ program
   });
 
 program
+  .command("remove <source>")
+  .description("remove a template in your templates directory")
+  .option("--src <src>", 'location of of your source code (default: "./src")')
+  .option("--verbose", "show additional information")
+  .action(async (location, options) => {
+    const instance = creditor({
+      rel_src: options.src,
+      verbose: options.verbose,
+    });
+    try {
+      await instance.init();
+      await instance.remove({
+        template: location.split(path.sep).filter((item) => item)[0],
+        name: location
+          .split(path.sep)
+          .filter((item) => item)
+          .slice(1)
+          .join(path.sep),
+      });
+    } catch (e) {
+      console.log("ERROR::", e.message, "--", e.stack.split("\n")[0]);
+    }
+  });
+
+program
   .command("move <source> <destination>")
   .description(
-    "Move (recursively) an template defined in you templates directory"
+    "Move (recursively) an template defined in your templates directory"
   )
   .option("--src <src>", 'location of of your source code (default: "./src")')
   .option("--verbose", "show additional information")
@@ -184,13 +212,13 @@ function _prompts() {
         type: "list",
         name: "action",
         message: "What action would you like to perform?",
-        choices: ["create", "move", "aggregate", "analyse", "delete", "leave"],
+        choices: ["create", "move", "aggregate", "analyse", "remove", "leave"],
         nextPrompt() {
           if (
             answers.action === "create" ||
             answers.action === "move" ||
             answers.action === "aggregate" ||
-            answers.action === "delete"
+            answers.action === "remove"
           )
             return "template";
           if (answers.action === "analyse") return "anLoc";
@@ -207,7 +235,7 @@ function _prompts() {
         nextPrompt() {
           if (answers.action === "create") return "mkLoc";
           if (answers.action === "move") return "mvSrc";
-          if (answers.action === "delete") return "delLoc";
+          if (answers.action === "remove") return "delLoc";
         },
       };
     },
@@ -271,7 +299,7 @@ function _prompts() {
         type: "autocomplete",
         name: "delLoc",
         suggestOnly: true,
-        message: `What ${answers.template} would you like to delete within ${
+        message: `What ${answers.template} would you like to remove within ${
           path.sep + answers.template + path.sep
         }?`,
         source: async (_, input) => {
@@ -282,23 +310,24 @@ function _prompts() {
         validate: (input) => {
           if (!input) return "This question is required";
           input = path.normalize(input);
+          const loc = path.normalize(answers.template + path.sep + input);
+          if (_isValidDir(input))
+            return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
+
+          if (!analysis.package.uses[loc]) {
+            return `${path.normalize(
+              answers.template + path.sep + input
+            )} does not exist in ${answers.template}`;
+          }
           if (_isValidDir(input))
             return `${input} is not a valid directory of form some${path.sep}nested${path.sep}directory`;
           if (input === path.sep)
-            return `Cannot delete the root of ${
+            return `Cannot remove the root of ${
               path.sep + answers.template
             } directory`;
-          if (
-            Object.keys(
-              analysis.package.usedBy[
-                path.normalize(answers.template + path.sep + input)
-              ]
-            ).length > 0
-          )
+          if (Object.keys(analysis.package.usedBy[loc] || {}).length > 0)
             return `${path.normalize(input)} is being used by ${Object.keys(
-              analysis.package.usedBy[
-                path.normalize(answers.template + path.sep + input)
-              ]
+              analysis.package.usedBy[loc]
             )}`;
           return true;
         },

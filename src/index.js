@@ -9,6 +9,7 @@ const actions_create = require("#src/actions/create/index.js");
 const actions_move = require("#src/actions/move/index.js");
 const actions_aggregate = require("#src/actions/aggregate/index.js");
 const actions_analyse = require("#src/actions/analyse/index.js");
+const actions_remove = require("#src/actions/remove/index.js");
 
 const fs_commitFileObject = require("#src/fs/commitFileObject/index.js");
 
@@ -169,12 +170,54 @@ function creditor(given = {}) {
     return { files, templates };
   }
 
+  async function remove({ template, name }) {
+    if (!template) {
+      throw new Error("a template name was not specified");
+    }
+    if (!options.templates[template]) {
+      throw new Error(
+        `the template "${template}" is not defined in the templates dir`
+      );
+    }
+    if (!options.package.uses[`${template}/${name}`]) {
+      throw new Error(`${template}/${name} does not exist`);
+    }
+    if (!name) {
+      throw new Error("the source location was not specified");
+    }
+
+    const { files } = await actions_remove(options, {
+      template,
+      name,
+    });
+
+    console.log("-- flies", files);
+    await fs_commitFileObject({
+      toDelete: files,
+      path_base: options.path_src,
+      rel_base: options.rel_src,
+      verbose: options.verbose,
+    });
+
+    options.package = await utils_analyzeSrc(options);
+    const aggregated = await actions_aggregate(options, { template });
+    await fs_commitFileObject({
+      toUpdate: aggregated.files,
+      path_base: options.path_src,
+      rel_base: options.rel_src,
+      verbose: options.verbose,
+    });
+
+    return { files };
+  }
+
   return {
     init,
     move,
     create,
     aggregate,
     analyse,
+    remove,
     options: options,
   };
 }

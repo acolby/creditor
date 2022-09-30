@@ -118,5 +118,16 @@ describe("creditor", () => {
         expect(!!templates.toUpdate["comps/index.js"]).to.equal(false);
       });
     });
+
+    describe("actions_remove", () => {
+      it("should properly move all items in directory", async () => {
+        const { files } = await instance.remove({
+          template: "comps",
+          name: "root",
+        });
+        expect(files["comps/root/index.js"]).to.equal("");
+        expect(files["comps/root/test.js"]).to.equal("");
+      });
+    });
   });
 });

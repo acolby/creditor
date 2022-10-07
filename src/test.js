@@ -31,16 +31,16 @@ describe("creditor", () => {
 
     describe("actions_anaylse", () => {
       it("should properly analyise the src", async () => {
-        const { files, analyse } = await instance.analyse({});
+        const { files, analyze } = await instance.analyze({});
         expect(Object.keys(files).length).to.equal(0);
-        expect(Object.keys(analyse).length > 0).to.equal(true);
+        expect(Object.keys(analyze).length > 0).to.equal(true);
       });
       it("should properly output to given output the src", async () => {
-        const { files, analyse } = await instance.analyse({
+        const { files, analyze } = await instance.analyze({
           rel_output: "graph.json",
         });
         expect(Object.keys(files)[0]).to.equal("graph.json");
-        expect(Object.keys(analyse).length > 0).to.equal(true);
+        expect(Object.keys(analyze).length > 0).to.equal(true);
       });
     });
 

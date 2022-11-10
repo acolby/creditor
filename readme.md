@@ -89,7 +89,7 @@ For example you may scaffold a 'comps' with the interface file (index.js) a test
 
 The following keywords within your template files will be swapped out with the created template.
 
-- CREDITOR*UNDERSCORE_NAME -> name of component delineated by '*'
+- CREDITOR_UNDERSCORE_NAME -> name of component delineated by '_'
 - CREDITOR_PERIOD_NAME -> name of component delineated by '.'
 - CREDITOR_DASH_NAME -> name of component delineated by '-'
 - CREDITOR_SLASH_NAME -> name of component delineated by '/'

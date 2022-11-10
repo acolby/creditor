@@ -89,7 +89,7 @@ For example you may scaffold a 'comps' with the interface file (index.js) a test
 
 The following keywords within your template files will be swapped out with the created template.
 
-- CREDITOR_UNDERSCORE_NAME -> name of component delineated by '_'
+- CREDITOR*UNDERSCORE_NAME -> name of component delineated by '*'
 - CREDITOR_PERIOD_NAME -> name of component delineated by '.'
 - CREDITOR_DASH_NAME -> name of component delineated by '-'
 - CREDITOR_SLASH_NAME -> name of component delineated by '/'
@@ -118,31 +118,25 @@ For example you may scaffold a 'comps' with the interface file (index.js) a test
 When creditor runs and if the comps directory is changed in any way. A corresponding /index.js file will be created at the top of the comps directory. The index.js file defined in /creditor/aggregators/comps is the definition file for how to aggregate the sub-files.
 
 ```js
-var os = require('os')
-const eol = (os.EOL)
-const path = require('path')
-const utils_slash = require("#src/utils/slash/index.js");
 module.exports = ({ paths = [] }) => {
-
   const filtered = paths
-    .filter(item => item.split(path.sep).length === 2)
+    .filter((item) => item.split(path.sep).length > 1)
     .sort();
-  
-  const _exports = filtered
-    .map(item => {
-      const importPath = utils_slash(`#src/${item}`);
-      return `export { ${item.split(path.sep).join('_')} } from '${importPath}';`});  //incorporate path.sep
 
-  return ['', ..._exports, ''].join(eol);
+  const _exports = filtered.map((item) => {
+    return `export { ${item.split("/").join("_")} } from '#src/${item}';`;
+  });
+
+  return ["", ..._exports, ""].join("\n");
 };
 ```
 
-The above example takes the directory and exports all items that are defined at the second layer of the file. This is to create an interface file for other directories or for perhaps a library interface.
+The above example takes the directory and exports all items from a top level index file. This is to create an interface file for consumers.
 
 ```js
-export { routes_login } from "#src/routes/login";
-export { routes_profile } from "#src/routes/profile";
-export { routes_settings } from "#src/routes/settings";
+export { comps_login } from "#src/comps/login";
+export { comps_profile } from "#src/comps/profile";
+export { comps_settings } from "#src/comps/settings";
 ```
 
 Aggregators will run anytime the path structure of the given directory changes

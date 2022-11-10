@@ -1,8 +1,8 @@
 {
   "name": "@acolby/creditor",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Creditor is used to for maintaining and scaffolding boiler plate templates code within a repository. Once templates are defined, Creditor makes it easy create, rename, moved, analyze and used these templates.",
-  "main": "index.js",
+  "main": "./src/index.js",
   "directories": {
     "lib": "lib",
     "test": "test"

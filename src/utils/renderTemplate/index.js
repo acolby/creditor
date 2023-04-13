@@ -10,7 +10,7 @@ function utils_renderTemplate(template, usage) {
     .split("\n")
     .map((line) => {
       let rendered = line;
-      while (rendered.indexOf("CREDITOR_") > 0) {
+      while (rendered.indexOf("CREDITOR_") >= 0) {
         const delimitorKey = Object.keys(delimiters).find((delimitorKey) => {
           return rendered.indexOf(delimitorKey) > -1;
         });

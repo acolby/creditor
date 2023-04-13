@@ -5,3 +5,5 @@ export const CREDITOR_UNDERSCORE_NAME = {
     return <div>CREDITOR_UNDERSCORE_NAME placeholder</div>;
   },
 };
+
+CREDITOR_UNDERSCORE_NAME.created = true;

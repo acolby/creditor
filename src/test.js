@@ -60,6 +60,8 @@ describe("creditor", () => {
           "  },",
           "};",
           "",
+          "comps_users_login_mainButton.created = true;",
+          "",
         ].join(eol);
 
         const test_expected = [

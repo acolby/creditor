@@ -2,7 +2,7 @@
 
 ##### Minimize writing boilerplate - focus on business logic!
 
-Creditor is used for maintaining and scaffolding boiler plate template code within a repository. Once templates are defined, Creditor makes it easy create, rename, moved, analyze, and use items associated with these templates.
+Creditor is used for maintaining and scaffolding boiler plate template code within a repository. Once templates are defined, Creditor makes it easy create, rename, move, analyze, and use items associated with these templates.
 
 ## Usage
 
@@ -89,7 +89,7 @@ For example you may scaffold a 'comps' with the interface file (index.js) a test
 
 The following keywords within your template files will be swapped out with the created template.
 
-- CREDITOR_UNDERSCORE_NAME -> name of component delineated by '_'
+- CREDITOR*UNDERSCORE_NAME -> name of component delineated by '*'
 - CREDITOR_PERIOD_NAME -> name of component delineated by '.'
 - CREDITOR_DASH_NAME -> name of component delineated by '-'
 - CREDITOR_SLASH_NAME -> name of component delineated by '/'
